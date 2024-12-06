@@ -19,7 +19,7 @@ class SizeSeeder extends Seeder
             'status' => 1
         ]);
         Size::create([
-            'name' => "7.5 inch * 5 inch - L" , 
+            'name' => "7.5 inch * 5 inch - M" , 
             'status' => 1
         ]);
         Size::create([
