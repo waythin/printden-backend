@@ -131,6 +131,9 @@ class ServiceController extends Controller
 
                 }
             }
+            else{
+                return $this->responseWithError(null, "No file found!");
+            }
             
             $order = Order::create([
                 'order_no' => 'ord_' . rand(10000000, 99999999),
