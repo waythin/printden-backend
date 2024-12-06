@@ -123,8 +123,8 @@ class ServiceController extends Controller
                         ]);
                         $document_ids[] = [
                             'id' => $item->id,
-                            'size_id' => $data['size_id'],
-                            'frame_id' => $data['frame_id']
+                            'size_id' => $data['size_id'] ?? null,
+                            'frame_id' => $data['frame_id'] ?? null
                         ];
                     }
                     // dd("bye");
