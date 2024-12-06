@@ -185,9 +185,9 @@ class ServiceController extends Controller
                         'frame_id' => $data['frame_id'] ?? null,
                     ];
                 }
-                else{
-                    return $this->responseWithError(null, "No file found.", 400);
-                }
+                // else{
+                //     return $this->responseWithError(null, "No file found.", 400);
+                // }
             }
     
             // Create order
@@ -209,7 +209,7 @@ class ServiceController extends Controller
             }
     
             DB::commit();
-            return $this->responseWithSuccess($order, 'Uploaded Successfully');
+            return $this->responseWithSuccess($order, 'Upload successful! We’ll get back to you shortly.');
 
         } catch (\Throwable $th) {
             DB::rollBack();
