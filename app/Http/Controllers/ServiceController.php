@@ -98,52 +98,107 @@ class ServiceController extends Controller
             }
 
          
+            // DB::beginTransaction();
+          
+            
+            // $documents = $request->documents; 
+            // // dd($documents);
+            // $document_ids = [];
+            
+            // if (!empty($documents)) {
+            //     $customer = Customer::create([
+            //         'name' => $request->name,
+            //         'slug' => Str::slug($request->name, '-'),
+            //         'email' => $request->email,
+            //         'phone' => $request->phone,
+            //     ]);
+
+
+            //     foreach ($documents as $key => $data) {
+            //         // dd($data['file']);
+            //         if ($request->hasFile("documents.$key.file")) { 
+            //             $image_file = $request->file("documents.$key.file"); 
+            //             $image_name = date('YmdHis') . '.' . $image_file->getClientOriginalExtension();
+            //             $image_file->move(public_path('/admin/orders'), $image_name);
+            
+            //             $item = Document::create([
+            //                 'file_name' => $image_name,
+            //             ]);
+            //             $document_ids[] = [
+            //                 'id' => $item->id,
+            //                 'size_id' => $data['size_id'] ?? null,
+            //                 'frame_id' => $data['frame_id'] ?? null
+            //             ];
+            //         }
+            //         // dd("bye");
+
+            //     }
+
+            //     $order = Order::create([
+            //         'order_no' => 'ord_' . rand(10000000, 99999999),
+            //         'customer_id' => $customer->id,     
+            //         'service_id' => $request->service_id,
+            //         'album_id' => $request->album_id,
+            //     ]);
+
+            //     foreach ($document_ids as $data) {
+            //         OrderDetails::create([
+            //             'order_id' => $order->id,
+            //             'document_id' => $data['id'],
+            //             'size_id' => $data['size_id'],
+            //             'frame_id' => $data['frame_id'],
+            //         ]);
+            //     }
+            //     DB::commit();
+            //     return $this->responseWithSuccess($order, 'Uploaded Successfully');
+            // }
+
+
             DB::beginTransaction();
+            $documents = $request->documents;
+            if (empty($documents)) {
+                return $this->responseWithError(null, "No documents provided.", 400);
+            }
+    
+            // Create customer
             $customer = Customer::create([
                 'name' => $request->name,
                 'slug' => Str::slug($request->name, '-'),
                 'email' => $request->email,
                 'phone' => $request->phone,
             ]);
-            
-            $documents = $request->documents; 
-            // dd($documents);
+    
             $document_ids = [];
-            
-            if (!empty($documents)) {
-                foreach ($documents as $key => $data) {
-                    // dd($data['file']);
-                    if ($request->hasFile("documents.$key.file")) { 
-                        $image_file = $request->file("documents.$key.file"); 
-                        $image_name = date('YmdHis') . '.' . $image_file->getClientOriginalExtension();
-                        $image_file->move(public_path('/admin/orders'), $image_name);
-            
-                        $item = Document::create([
-                            'file_name' => $image_name,
-                        ]);
-                        $document_ids[] = [
-                            'id' => $item->id,
-                            'size_id' => $data['size_id'] ?? null,
-                            'frame_id' => $data['frame_id'] ?? null
-                        ];
-                    }
-                    // dd("bye");
+            foreach ($documents as $key => $data) {
 
+                if ($request->hasFile("documents.$key.file")) {
+                    $image_file = $request->file("documents.$key.file");
+                    $image_name = uniqid() . '_' . date('YmdHis') . '.' . $image_file->getClientOriginalExtension();
+                    $image_file->move(public_path('/admin/orders'), $image_name);
+    
+                    $item = Document::create([
+                        'file_name' => $image_name,
+                    ]);
+                    $document_ids[] = [
+                        'id' => $item->id,
+                        'size_id' => $data['size_id'] ?? null,
+                        'frame_id' => $data['frame_id'] ?? null,
+                    ];
+                }
+                else{
+                    return $this->responseWithError(null, "No file found.", 400);
                 }
             }
-            else{
-                return $this->responseWithError(null, "No file found!");
-            }
-            
+    
+            // Create order
             $order = Order::create([
                 'order_no' => 'ord_' . rand(10000000, 99999999),
                 'customer_id' => $customer->id,
                 'service_id' => $request->service_id,
                 'album_id' => $request->album_id,
             ]);
-            
-            // Save order details
-            $details = [];
+    
+            // Create order details
             foreach ($document_ids as $data) {
                 OrderDetails::create([
                     'order_id' => $order->id,
@@ -152,8 +207,7 @@ class ServiceController extends Controller
                     'frame_id' => $data['frame_id'],
                 ]);
             }
-
-
+    
             DB::commit();
             return $this->responseWithSuccess($order, 'Uploaded Successfully');
 
