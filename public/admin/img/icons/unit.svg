@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <clipPath id="clip-unit-type-default">
+      <rect width="24" height="24"/>
+    </clipPath>
+  </defs>
+  <g id="unit-type-default" clip-path="url(#clip-unit-type-default)">
+    <g id="Group_30533" data-name="Group 30533" transform="translate(-28.205 -302.116)">
+      <path id="pathfinder-unite-marge" d="M13.262,6.148V2.8a.8.8,0,0,0-.8-.8H2.8a.8.8,0,0,0-.8.8v9.653a.8.8,0,0,0,.8.8H6.148a6.033,6.033,0,1,0,7.114-7.114ZM12.055,16.48A4.439,4.439,0,0,1,7.649,12.4a.8.8,0,0,0-.8-.743H3.609V3.609h8.044V6.847a.8.8,0,0,0,.743.8,4.424,4.424,0,0,1-.341,8.829Z" transform="translate(30.158 304.068)" fill="#718791"/>
+      <line id="Line_93" data-name="Line 93" x2="4.305" y2="4.305" transform="translate(37.619 311.879)" fill="none" stroke="#718791" stroke-linecap="round" stroke-width="2"/>
+    </g>
+  </g>
+</svg>
