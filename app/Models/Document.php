@@ -10,7 +10,7 @@ class Document extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public function getImageAttribute($value)
+    public function getFileNameAttribute($value)
     {
         if(!$value){
             return asset('dummy/no_image.png');

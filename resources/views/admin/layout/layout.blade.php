@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="Md. Imranul Islam">
 
-    <title>Bangladesh 2.0 | @yield('title')</title>
+    <title>Print Den | @yield('title')</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -24,7 +24,7 @@
     <link href="https://cdn.datatables.net/plug-ins/1.10.11/features/searchHighlight/dataTables.searchHighlight.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
     <link href="{{ url('admin/css/custom.css') }}" rel="stylesheet">
-    <link rel="icon" href="{{asset('admin/img/fab-icon.png')}}" type="image/gif" sizes="16x16">
+    <link rel="icon" href="{{asset('admin/printden_main.svg')}}" type="image/gif" sizes="16x16">
     @stack('styles')
 </head>
 

@@ -22,10 +22,10 @@ class IsAdmin
             return redirect()->route('login')->with('error_message', 'Your are not authorized to visit this route!');
         }
         
-        if(Auth::guard('admin')->user()->role == 'super-admin' || Auth::guard('admin')->user()->role == 'admin'){
+        // if(Auth::guard('admin')->user()->role == 'super-admin' || Auth::guard('admin')->user()->role == 'admin'){
             
-            return redirect()->route('login')->with('error_message', 'Your are not authorized to visit this route!');
-        }
+        //     return redirect()->route('login')->with('error_message', 'Your are not authorized to visit this route!');
+        // }
         return $next($request);
     }
 }

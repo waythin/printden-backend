@@ -13,9 +13,10 @@ class Frame extends Model
 
     public function getImageAttribute($value)
     {
-        if(!$value){
+        if (!$value) {
             return asset('dummy/no_image.png');
         }
-        return asset('/admin/frames/'. $value);
+        // Ensure the full URL is returned
+        return url('/admin/frames/' . ltrim($value, '/'));
     }
 }

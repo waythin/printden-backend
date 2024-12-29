@@ -26,7 +26,7 @@
                             </div>
                             <div class="col-12 pt-4">
                                 <div class="d-text mb-1">
-                                    Members Acquired
+                                    Total Orders
                                 </div>
                             </div>
 
@@ -54,7 +54,7 @@
                             </div>
                             <div class="col-12 pt-4">
                                 <div class="d-text mb-1">
-                                    Total Groups
+                                    Delivered Orders
                                 </div>
                             </div>
 
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-12 pt-4">
                                 <div class="d-text mb-1">
-                                    Meeting Minutes
+                                    Total Customers
                                 </div>
                             </div>
 
@@ -111,7 +111,7 @@
 
                             <div class="col-12 pt-4">
                                 <div class="d-text mb-1">
-                                    Events
+                                    Revenue
                                 </div>
                             </div>
 
@@ -124,64 +124,37 @@
 
         <div class="row padding-top">
             <div class="col-lg-12">
-                <h4>Recently Joined Members</h4>
-                @if (!empty($members))
+                <h4>Recent Orders</h4>
+                @if (!empty($orders) && $orders->count())
                     <div class="table-responsive">
                         <table class="table" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Customer Name</th>
                                     <th>Contact No.</th>
                                     <th>Email Address</th>
-                                    <th>Organization</th>
-                                    <th>Designation</th>
-                                    <th>Joining Date</th>
+                                    {{-- <th>Order Type</th> --}}
+                                    <th>Order No</th>
+                                    <th>Order Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($members as $key => $member)
+                                @foreach ($orders as $key => $order)
                                 {{-- @dd($member) --}}
                                     <tr>
-                                        <td>
-                                            @if (!empty($member['admin']['image']))
-                                                <img class="tbl-img-thumbnail mr-3"
-                                                    src="{{ asset($member['admin']['image']) }}" />
-                                            @else
-                                                {{-- Generate a random background color --}}
-                                                @php
-                                                    $hue = mt_rand(0, 360); // Random hue
-                                                    $saturation = mt_rand(30, 70); // Adjust saturation for softer colors
-                                                    $lightness = mt_rand(70, 90); // Adjust lightness for softer colors
-
-                                                    $randomBackgroundColor = "hsl($hue, $saturation%, $lightness%)";
-                                                @endphp
-
-                                                @if (!empty($member['admin']['name']))
-                                                    {{-- Create an image with the initial letter and random background color --}}
-                                                    <img class="rounded-circle"
-                                                        style="width: 30px; height: 30px; background-color: {{ $randomBackgroundColor }}; text-align: center; line-height: 30px;"
-                                                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Ctext x='50%' y='50%' font-size='12' text-anchor='middle' dy='.3em' fill='%23000000' font-family='Arial, sans-serif'%3E{{ strtoupper(substr($member['admin']['name'], 0, 1)) }}%3C/text%3E%3C/svg%3E"
-                                                        alt="">
-                                                @endif
-                                            @endif
-                                            <span><a href="{{ route('admin.settings.memberProfile', [$member['id']]) }}"
-                                                    class="company-profile-view"
-                                                    target="_blank">{{ $member['admin']['name'] }}</a></span>
-
-                                        </td>
-                                        
-                                        <td>{{ $member['admin']['mobile'] }}</td>
-                                        <td>{{ $member['admin']['email'] }}</td>
-                                        <td>{{ $member['organization'] }}</td>
-                                        <td>{{ $member['designation'] }}</td>
-                                        <td>{{ date('M d, Y', strtotime($member['created_at'])) }}</td>
+                                        <td>{{ $order->customer->name }}</td>
+                                        <td>{{ $order->customer->phone }}</td>
+                                        <td>{{ $order->customer->email }}</td>
+                                        <td>{{ $order->order_no }}</td>
+                                        {{-- <td>{{ $order->size->printType->name }}</td> --}}
+                                        <td>{{ date('M d, Y', strtotime($order->created_at)) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                 @else
-                    <h6 class="padding-top">No Members Available</h6>
+                    <h6 class="padding-top">No Orders Available</h6>
                 @endif
             </div>
         </div>

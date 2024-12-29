@@ -38,17 +38,20 @@ class AuthController extends Controller
 
 			$this->validate($request, $rules, $customMessages);
 			try {
+
 				if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
-					$admin = Admin::find(auth('admin')->user()->id);
-				
-						$admin->update([
-							'token' => Str::random(56),
-						]);
-						return redirect()->route('admin.dashboard')->with('success', "Logged In successfully!");
-					
+
+					$user = User::find(auth('admin')->user()->id);
+					$token = Str::random(56);
+
+					$user->update([
+						'token' => $token,
+					]);
+
+					return redirect()->route('admin.dashboard')->with('success', "Logged In successfully!");
 
 				} else {
-					return redirect()->back()->with('error_message', 'Invalid Email or Password'); //need to change
+					return redirect()->back()->with('error_message', 'Invalid Email or Password'); 
 				}
 			} catch (\Throwable $exception) {
 				return redirect()->back()->with('error_message', $exception->getMessage());
@@ -330,8 +333,7 @@ class AuthController extends Controller
 				'token' => null
 			]);
 			Auth::guard('admin')->logout();
-			// Clear all session variables
-			// Session::flush();
+			Session::flush();
 
 			return redirect()->route('login');
 		} catch (\Throwable $exception) {

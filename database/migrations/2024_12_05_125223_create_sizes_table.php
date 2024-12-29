@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('sizes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('print_type_id')->nullable()->constrained('print_types')->cascadeOnDelete();
             $table->boolean('status')->default(1);
+            $table->decimal('price');
+            $table->string('dimention')->nullable();
             $table->timestamps();
         });
     }

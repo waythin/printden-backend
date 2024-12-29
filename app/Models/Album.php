@@ -15,7 +15,9 @@ class Album extends Model
         if(!$value){
             return asset('dummy/no_image.png');
         }
-        return asset('/admin/albums/'. $value);
+        return url('/admin/albums/' . ltrim($value, '/'));
     }
+
+  
 
 }

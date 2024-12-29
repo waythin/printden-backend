@@ -4,7 +4,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
         <div class="sidebar-brand-icon">
-            <img class="img-fluid" src="{{ asset('admin/img/logo.svg') }}" />
+            <img class="img-fluid" src="{{ asset('admin/printden_main.svg') }}" style="width: 80px;" />
         </div>
     </a>
 
@@ -16,11 +16,24 @@
             <img class="img-fluid" src="{{ asset('admin/img/icons/dashboard.svg') }}" />
             <span>Dashboard</span></a>
     </li>
+
     <li class="nav-item {{ strpos(request()->url(), 'order') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('admin.orders') }}">
             <img class="img-fluid" src="{{ asset('admin/img/icons/order.svg') }}" />
             <span>Orders</span></a>
     </li>
+    <li class="nav-item {{ strpos(request()->url(), 'customer') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.customers') }}">
+            <img class="img-fluid" src="{{ asset('admin/img/icons/order.svg') }}" />
+            <span>Customers Record</span></a>
+    </li>
+
+    <li class="nav-item {{ strpos(request()->url(), 'contact/list') ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('admin.contact.list')}}">
+            <img class="img-fluid" src="{{ asset('admin/img/icons/order.svg') }}" />
+            <span>Contact Us</span></a>
+    </li>
+    
   
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
@@ -30,7 +43,7 @@
                 @if (!empty(Auth::guard('admin')->user()->image))
                     <img class="img-profile rounded-circle p-img1" src="{{ asset(Auth::guard('admin')->user()->image) }}" alt="profile" data-toggle="tooltip" data-placement="top" title="{{ Auth::guard('admin')->user()->name }}">
                 @else
-                    <img class="img-profile rounded-circle p-img1" src="{{ asset('admin/img/undraw_profile.svg') }}" alt="profile" data-toggle="tooltip" data-placement="top" title="{{ Auth::guard('admin')->user()->name }}">
+                    <img class="img-profile rounded-circle p-img1" src="{{ asset('dummy/no_image.png') }}" alt="profile" data-toggle="tooltip" data-placement="top" title="{{ Auth::guard('admin')->user()->name ?? null}}">
                 @endif
             </div>
         </div>
@@ -42,7 +55,8 @@
             
             <div class="dropdown-menu" aria-labelledby="userDropdown">
                 
-                <a class="dropdown-item profile-dropdown" href="{{ route('admin.settings', 'account-settings') }}">
+                {{-- {{ route('admin.settings', 'account-settings') }} --}}
+                <a class="dropdown-item profile-dropdown" href="">
                     Settings
                     <img class="img-profile hover-prof" src="{{ asset('admin/img/icons/settings.svg') }}" alt="profile">
                     
@@ -68,23 +82,3 @@
     
 </ul>
 <!-- End of Sidebar -->
-
-@push('scripts')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // use tooltip
-        $('.profile-icon [data-toggle="tooltip"]').tooltip();
-
-            var userID = <?php echo json_encode(
-                auth()
-                    ->guard('admin')
-                    ->user()->id,
-            ); ?>;
-            var userType = <?php echo json_encode(
-                auth()
-                    ->guard('admin')
-                    ->user()->role,
-            ); ?>;
-        });
-    </script>
-@endpush

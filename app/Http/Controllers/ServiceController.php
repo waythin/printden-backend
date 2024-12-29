@@ -11,6 +11,8 @@ use App\Models\Customer;
 use App\Models\Document;
 use Illuminate\Support\Str;
 use App\Models\OrderDetails;
+use App\Models\Payment;
+use App\Models\PrintType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -48,6 +50,20 @@ class ServiceController extends Controller
         }
     }
 
+    public function printTypeList()
+    {
+        try {
+            $data = PrintType::with('size')->get();
+            if($data){
+                return $this->responseWithSuccess($data, 'Size list Loaded');
+            }
+            return $this->responseWithError(null, "Data not found");
+
+        } catch (\Throwable $th) {
+            return $this->responseWithError(null, $th->getMessage());
+        }
+    }
+    
 
     public function albumList()
     {
@@ -78,19 +94,20 @@ class ServiceController extends Controller
     }
 
 
-
     public function servicePost(Request $request)
     {
         try {
             // dd($request->all());
-            Log::info('Request data:', $request->all());
+            // Log::info('Request data:', $request->all());
             $validator = Validator::make(
                 $request->all(),
                 [
                     'name' => 'required',
                     'email' => 'required',
                     'phone' => 'required',
-                    'documents' => 'required|array|min:1'                
+                    'service_id' => 'required',
+                    'documents' => 'required|array|min:1',
+                    'documents.*.size_id' => 'required|integer',            
                 ],
                 []
             );
@@ -127,40 +144,81 @@ class ServiceController extends Controller
                         'id' => $item->id,
                         'size_id' => $data['size_id'] ?? null,
                         'frame_id' => $data['frame_id'] ?? null,
+                        'album_id' => $data['album_id'] ?? null,
                     ];
                 }
-                // else{
-                //     return $this->responseWithError(null, "No file found.", 400);
-                // }
+                else{
+                    return $this->responseWithError(null, "No file found.", 400);
+                }
             }
             // Create order
             $order = Order::create([
-                'order_no' => 'ord_' . rand(10000000, 99999999),
+                'order_no' => 'ord_' . rand(100000000, 999999999),
                 'customer_id' => $customer->id,
                 'service_id' => $request->service_id,
-                'album_id' => $request->album_id,
             ]);
     
             // Create order details
+            $total_amount = null;
+            
             foreach ($document_ids as $data) {
+
+                $price = Size::find($data['size_id'])->price;
+                $total_amount += $price;
+
                 OrderDetails::create([
                     'order_id' => $order->id,
+                    'price' => $price,
                     'document_id' => $data['id'],
                     'size_id' => $data['size_id'],
                     'frame_id' => $data['frame_id'],
+                    'album_id' => $data['album_id'],
                 ]);
             }
+
+
+
+            // payment
+
+            $payment_method = '';
+            $order_status = '';
+            $payment_status = "pending";
+
+
+            if($request->payment_method == "online"){
+                $payment_method = 'online';
+                $payment_status = "success";
+                $order_status = "confirm";
+            }else{
+                $payment_method = 'cod';
+                $order_status = "pending";
+            }
+
+
+            // bkash payment
+
+            $payment = Payment::create([
+                'order_id' => $order->id,
+                'transaction_no' => 'txn_' . rand(10000000, 99999999),
+                'payment_method' => $payment_method,
+                'payment_status' => $payment_status,
+                'payment_amount' => $total_amount,
+                // 'payment_details' => json_encode($request->all()),
+            ]);
+            
+
+            $order->update([
+                'total' => $total_amount,
+                'status' => $order_status,
+            ]);
+
             DB::commit();
-            return $this->responseWithSuccess($order, 'Upload successful! We’ll get back to you shortly.');
+            return $this->responseWithSuccess($order, 'Upload successful! We will get back to you shortly.');
 
         } catch (\Throwable $th) {
             DB::rollBack();
             return $this->responseWithError(null, $th->getMessage());
         }
     }
-
-
-
-
 
 }

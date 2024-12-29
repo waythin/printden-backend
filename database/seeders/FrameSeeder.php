@@ -16,19 +16,19 @@ class FrameSeeder extends Seeder
         Frame::create([
             'name' => "frame 1" , 
             'slug' => "frame-1" , 
-            'image' => "frame-1" , 
+            'image' => "frame-1.png" , 
             'status' => 1
         ]);
         Frame::create([
             'name' => "frame 2" , 
             'slug' => "frame-2" , 
-            'image' => "frame-2" , 
+            'image' => "frame-2.png" , 
             'status' => 1
         ]);
         Frame::create([
             'name' => "frame 3" , 
             'slug' => "frame-3" , 
-            'image' => "frame-3" , 
+            'image' => "frame-3.png" , 
             'status' => 1
         ]);
     }

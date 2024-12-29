@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_no');
+            $table->double('total')->nullable();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
-            $table->foreignId('album_id')->nullable()->constrained('albums')->cascadeOnDelete();
-            $table->enum('status', ['pending', 'failed', 'success'])->default('pending');
+            $table->enum('status', ['pending', 'confirm', 'processing', 'failed', 'success', 'delivered'])->default('pending');
             $table->timestamps();
         });
     }

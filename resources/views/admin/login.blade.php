@@ -19,10 +19,10 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ url('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
-    <link rel="icon" href="{{asset('admin/img/logos/fab-icon.png')}}" type="image/gif" sizes="16x16">
+    <link rel="icon" href="{{asset('admin/printden_main.svg')}}" type="image/gif" sizes="16x16">
     <style>
         .sign-button {
-            background: #1E72FC;
+            background: #292929;
             width: 50%;
             height: 36px;
             padding: 0;
@@ -57,7 +57,7 @@
         .site_button {
             /* border-color: #000000; */
             /* font-weight: 800; */
-            background: #1E72FC;
+            background: #292929;
             font-size: 13px !important;
             border-radius: 6px;
             width: 100%;
@@ -172,7 +172,7 @@
         <div class="row justify-content-center w-100 mx-0" style="padding: 2rem 0rem 2rem 0rem;">
             <div class="col-12">
                 <a class="btn visit-web" href="{{ URL::to('/') }}">
-                    <img class="img-fluid mr-1" src="{{ asset('frontend/images/icons/arrow-left.svg') }}" />
+                    {{-- <img class="img-fluid mr-1" src="{{ asset('frontend/images/icons/arrow-left.svg') }}" /> --}}
                     Visit Website  
                 </a>
             </div>
@@ -210,9 +210,9 @@
                                     *</span></label>
                             <input type="email" class="form-control form-control-user" id="emailInput"
                                 name="email" value="{{ old('email') }}" title="Email" required>
-                            <span id="emailRightSign" style="display:none"><i><img
+                            {{-- <span id="emailRightSign" style="display:none"><i><img
                                         src="{{ asset('admin/img/icons/rightSign.png') }}"
-                                        style="margin-top: -4rem;margin-left: 18.5rem;" /></i></span>
+                                        style="margin-top: -4rem;margin-left: 18.5rem;" /></i></span> --}}
                             @error('email')
                                 <span class="pl-2 text-danger" role="alert">
                                     <strong>{{ $message }}</strong>

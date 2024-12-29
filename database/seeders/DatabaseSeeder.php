@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+        $this->call(AdminSeeder::class);
+        $this->call(PrinttypeSeeder::class);
         $this->call(SizeSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(FrameSeeder::class);

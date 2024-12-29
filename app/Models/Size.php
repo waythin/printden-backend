@@ -10,4 +10,9 @@ class Size extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function printType(){
+        return $this->belongsTo(PrintType::class);
+    }
+   
+
 }
