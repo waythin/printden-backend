@@ -8,16 +8,17 @@ use App\Http\Controllers\Admin\PriceController;
 use App\Http\Controllers\Admin\SettingsController;
 
 
-
 Route::fallback(function () {
-	$title = 'Error 404';
-	if(isset(Auth::guard('admin')->user()->id)){
-		return view('admin.errors.404')->with(compact('title'));
-	}
-	else{
-		return view('front.errors.404')->with(compact('title'));
-	}
-});
+    $title = 'Error 404';
+
+    if (Auth::guard('admin')->check()) {
+        // If the admin user is authenticated, show the admin 404 page
+        return view('admin.errors.404', compact('title'));
+    } else {
+        // Redirect unauthenticated users to the login route
+        return redirect()->route('login');
+    }
+})->name('fallback');
 
 
 Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name('login');
