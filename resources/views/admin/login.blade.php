@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Bangladesh 2.0 | Login</title>
+    <title>Print Den | Login</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -44,7 +44,7 @@
             background: rgb(255, 255, 255);
             border-radius: 1rem;
             box-shadow: 0px 40px 99px #527AB533;
-            min-height: 22rem;
+            min-height: 30rem;
             padding: 3rem 3rem 0rem 3rem;
         }
         .tc {
@@ -63,6 +63,9 @@
             width: 100%;
             height: 40px;
         }
+        .site_button:hover {
+                background: #484848 !important;
+            }
 
         .site_button_secondary {
             /* border-color: #000000; */
@@ -107,7 +110,7 @@
         }
 
         .artboard_section {
-            color: #0C1142;
+            color: #292929;
         }
 
         .artboard_section h6 {
@@ -149,10 +152,10 @@
         .visit-web {
             color: #FFFFFF;
             font-size: .85rem;
-            background: #020d45;
+            background: #404040;
             padding: 0.5rem 1.75rem;
             border-radius: .5rem;
-            border: 1px solid #020d45;
+            border: 1px solid #404040;
         }
         .visit-web:hover {
             color: #FFFFFF;
@@ -179,6 +182,7 @@
         </div>
         <!-- Outer Row -->
         <div class="row justify-content-center w-100 mx-0" style="padding: 5rem 0rem 5rem 0rem;">
+            
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="login_card">
                     <div class="text-center">
@@ -201,6 +205,12 @@
                                 </button>
                             </div>
                         @endif
+
+                        <div class="sidebar-brand-icon">
+                            <img class="img-fluid" src="{{ asset('admin/printden_main.svg') }}" style="width: 80px;" />
+                        </div>
+
+                        
                     </div>
                     <form id="signInForm" class="" action="{{ route('login') }}" method="post"
                         enctype="multipart/form-data">
