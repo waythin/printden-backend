@@ -174,7 +174,7 @@
     <div class="container-fluid min-vh-100">
         <div class="row justify-content-center w-100 mx-0" style="padding: 2rem 0rem 2rem 0rem;">
             <div class="col-12">
-                <a class="btn visit-web" href="{{ URL::to('/') }}">
+                <a class="btn visit-web" href="https://printden.store/">
                     {{-- <img class="img-fluid mr-1" src="{{ asset('frontend/images/icons/arrow-left.svg') }}" /> --}}
                     Visit Website  
                 </a>
@@ -290,6 +290,14 @@
                     );
                 }
             }
+
+            $("#signUpForm .show_hide_password").on("click", function() {
+                showHidePass("signUpForm");
+            });
+
+            $("#signInForm .show_hide_password").on("click", function() {
+                showHidePass("signInForm");
+            });
         });
     </script>
     <script>

@@ -65,7 +65,7 @@
                             <th span="1" style="width: 10%;">Payment Status</th>
                             <th span="1" style="width: 6%;">Method</th>
                             <th span="1" style="width: 10%;">Delivery Charge</th>
-                            <th span="1" style="width: 6%;">Amount</th>
+                            <th span="1" style="width: 12%;">Amount</th>
                             <th span="1" style="width: 8%;">Action</th>
                         </tr>
                     </thead>

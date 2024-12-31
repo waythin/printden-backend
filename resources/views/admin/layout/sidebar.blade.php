@@ -24,13 +24,13 @@
     </li>
     <li class="nav-item {{ strpos(request()->url(), 'customer') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('admin.customers') }}">
-            <img class="img-fluid" src="{{ asset('admin/img/icons/order.svg') }}" />
+            <img class="img-fluid" src="{{ asset('admin/store.svg') }}" />
             <span>Customers Record</span></a>
     </li>
 
     <li class="nav-item {{ strpos(request()->url(), 'contact/list') ? 'active' : '' }}">
         <a class="nav-link" href="{{route('admin.contact.list')}}">
-            <img class="img-fluid" src="{{ asset('admin/img/icons/order.svg') }}" />
+            <img class="img-fluid" src="{{ asset('admin/contact.svg') }}" />
             <span>Contact Us</span></a>
     </li>
     

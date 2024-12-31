@@ -18,6 +18,10 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
             $table->enum('status', ['pending', 'confirm', 'processing', 'failed', 'success', 'delivered'])->default('pending');
+            $table->text('location')->nullable();
+            $table->enum('delivery_type', ['inside_dhaka', 'outside_dhaka']);
+            $table->double('delivery_charge');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

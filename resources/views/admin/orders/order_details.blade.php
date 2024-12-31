@@ -17,7 +17,6 @@
             </div>
             <div class="col-md-6">
                 <p><strong>Phone:</strong> {{ $order['customer']['phone'] ?? 'N/A' }}</p>
-                <p><strong>Customer ID:</strong> {{ $order['customer']['id'] ?? 'N/A' }}</p>
             </div>
         </div>
     </div>
@@ -40,10 +39,20 @@
     <!-- Order Details -->
     <div class="order-details">
         <h6>Order Information</h6>
-        <p><strong>Order No:</strong> {{ $order['order_no'] ?? 'N/A' }}</p>
-        <p><strong>Total Amount:</strong> {{ number_format($order['total'] ?? 0, 2) }} TK</p>
-        <p><strong>Status:</strong> {{ ucfirst($order['status'] ?? 'N/A') }}</p>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Order No:</strong> {{ $order['order_no'] ?? 'N/A' }}</p>
+                <p><strong>Total Amount:</strong> {{ number_format($order['total'] ?? 0, 2) }} TK</p>
+                <p><strong>Delivery Charge:</strong> {{ $order['delivery_charge'] ?? 'N/A' }} TK</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Status:</strong> {{ ucfirst($order['status'] ?? 'N/A') }}</p>
+                <p><strong>Location:</strong> {{ $order['location'] ?? 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
 
+    <div>
 
         <div class="mt-3 text-right">
             

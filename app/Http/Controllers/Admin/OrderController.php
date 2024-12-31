@@ -101,10 +101,11 @@ class OrderController extends Controller
                 return $dropdown;
             })
             ->addColumn('amount', function (Order $data) {
-                return $data->total . ' TK';
+                return $data->total . ' TK <br>' . "Total Payable : " . $data->payment->payment_amount . ' TK';
             })
             ->addColumn('delivery_charge', function (Order $data) {
-                return "N/A";
+                $deliveryType = $data->delivery_type === 'inside_dhaka' ? 'Inside Dhaka' : 'Outside Dhaka';
+                return $deliveryType . '<br>' . $data->delivery_charge . ' TK';
             })
 
             ->addColumn('action', function (Order $data) {
@@ -118,7 +119,7 @@ class OrderController extends Controller
                             </div>';
                 return $actions;
             })
-            ->rawColumns(['order_details', 'customer_info', 'status', 'action', 'amount', 'payment_status'])    
+            ->rawColumns(['order_details', 'customer_info', 'status', 'action', 'amount', 'payment_status', 'delivery_charge', 'amount'])    
             ->make(true);
     }
 

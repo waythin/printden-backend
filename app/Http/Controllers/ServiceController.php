@@ -106,6 +106,8 @@ class ServiceController extends Controller
                     'email' => 'required',
                     'phone' => 'required',
                     'service_id' => 'required',
+                    'location' => 'required',
+                    'delivery_type' => 'required',
                     'documents' => 'required|array|min:1',
                     'documents.*.size_id' => 'required|integer',            
                 ],
@@ -151,11 +153,26 @@ class ServiceController extends Controller
                     return $this->responseWithError(null, "No file found.", 400);
                 }
             }
+
+            // delivery type 
+            $delivery_charge = null;
+
+            if($request->delivery_type == "inside_dhaka"){
+                $delivery_charge = 60 ;
+            }
+            else{
+                $delivery_charge = 120;
+            }
+
             // Create order
             $order = Order::create([
                 'order_no' => 'ord_' . rand(100000000, 999999999),
                 'customer_id' => $customer->id,
                 'service_id' => $request->service_id,
+                'location' => $request->location,
+                'delivery_type' => $request->delivery_type,
+                'delivery_charge' => $delivery_charge,
+                'note' => $request->note,
             ]);
     
             // Create order details
@@ -175,8 +192,6 @@ class ServiceController extends Controller
                     'album_id' => $data['album_id'],
                 ]);
             }
-
-
 
             // payment
 
@@ -202,7 +217,7 @@ class ServiceController extends Controller
                 'transaction_no' => 'txn_' . rand(10000000, 99999999),
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
-                'payment_amount' => $total_amount,
+                'payment_amount' => $total_amount + $delivery_charge,
                 // 'payment_details' => json_encode($request->all()),
             ]);
             
