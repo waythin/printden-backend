@@ -8,7 +8,7 @@
 </div>
 <div class="modal-body">
     <!-- Customer Details -->
-    <div class="customer-details mb-4">
+    {{-- <div class="customer-details mb-4">
         <h6>Customer Information</h6>
         <div class="row">
             <div class="col-md-6">
@@ -34,23 +34,48 @@
                 <p><strong>Payment Amount:</strong> {{ number_format($order['payment']['payment_amount'] ?? 0, 2) }} TK</p>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-    <!-- Order Details -->
-    <div class="order-details">
-        <h6>Order Information</h6>
-        <div class="row">
-            <div class="col-md-6">
-                <p><strong>Order No:</strong> {{ $order['order_no'] ?? 'N/A' }}</p>
-                <p><strong>Total Amount:</strong> {{ number_format($order['total'] ?? 0, 2) }} TK</p>
-                <p><strong>Delivery Charge:</strong> {{ $order['delivery_charge'] ?? 'N/A' }} TK</p>
+
+    <div class="row">
+        <!-- Customer Details -->
+        <div class="col-md-6">
+            <div class="customer-details mb-2">
+                <h6 class="mb-3">Customer Information</h6>
+                <p class="mb-1"><strong>Name:</strong> {{ $order['customer']['name'] ?? 'N/A' }}</p>
+                <p class="mb-1"><strong>Email:</strong> {{ $order['customer']['email'] ?? 'N/A' }}</p>
+                <p class="mb-1"><strong>Phone:</strong> {{ $order['customer']['phone'] ?? 'N/A' }}</p>
             </div>
-            <div class="col-md-6">
-                <p><strong>Status:</strong> {{ ucfirst($order['status'] ?? 'N/A') }}</p>
-                <p><strong>Location:</strong> {{ $order['location'] ?? 'N/A' }}</p>
+        </div>
+    
+        <!-- Payment Details -->
+        <div class="col-md-6">
+            <div class="payment-details mb-2">
+                <h6 class="mb-3">Payment Information</h6>
+                <p class="mb-1"><strong>Transaction No:</strong> {{ $order['payment']['transaction_no'] ?? 'N/A' }}</p>
+                <p class="mb-1"><strong>Payment Method:</strong> {{ ucfirst($order['payment']['payment_method'] ?? 'N/A') }}</p>
+                <p class="mb-1"><strong>Payment Status:</strong> {{ ucfirst($order['payment']['payment_status'] ?? 'N/A') }}</p>
+                <p class="mb-1"><strong>Payment Amount:</strong> {{ number_format($order['payment']['payment_amount'] ?? 0, 2) }} TK</p>
             </div>
         </div>
     </div>
+
+
+    <div class="row">
+        <!-- Customer Details -->
+        <div class="col-md-6">
+            <div class="customer-details mb-2">
+                <h6 class="mb-3">Order Information</h6>
+                <p class="mb-1" ><strong>Order No:</strong> {{ $order['order_no'] ?? 'N/A' }}</p>
+                <p class="mb-1"><strong>Total Amount:</strong> {{ number_format($order['total'] ?? 0, 2) }} TK</p>
+                <p class="mb-1"><strong>Delivery Charge:</strong> {{ $order['delivery_charge'] ?? 'N/A' }} TK</p>
+                <p class="mb-1"><strong>Status:</strong> {{ ucfirst($order['status'] ?? 'N/A') }}</p>
+                <p class="mb-1"><strong>Location:</strong> {{ $order['location'] ?? 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+    
+
 
     <div>
 
@@ -64,8 +89,8 @@
             </a>
         </div>
 
-        <table class="table table-bordered mt-3">
-            <thead>
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-light">
                 <tr>
                     <th>No</th>
                     <th>Image</th>
@@ -76,20 +101,18 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- @dd($order['orderDetails']) --}}
-
                 @if (!empty($order['orderDetails']))
                     @foreach ($order['orderDetails'] as $detail)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>
                                 @if (!empty($detail['document']['file_name']))
-                                <a href="{{ asset($detail['document']['file_name'])}}" target="_blank">
-                                    <img src="{{ url($detail['document']['file_name']) }}" 
-                                         alt="Document Image" 
-                                         style="max-width: 100px; height: auto;">
-                                </a>
-                                    
+                                    <a href="{{ asset($detail['document']['file_name'])}}" target="_blank">
+                                        <img src="{{ url($detail['document']['file_name']) }}" 
+                                             alt="Document Image" 
+                                             class="img-fluid" 
+                                             style="max-width: 100px;">
+                                    </a>
                                 @else
                                     N/A
                                 @endif
@@ -99,7 +122,8 @@
                                 @if (!empty($detail['album']['image']))
                                     <img src="{{ url($detail['album']['image']) }}" 
                                          alt="Album Image" 
-                                         style="max-width: 100px; height: auto;">
+                                         class="img-fluid" 
+                                         style="max-width: 100px;">
                                 @else
                                     N/A
                                 @endif
@@ -108,7 +132,8 @@
                                 @if (!empty($detail['frame']['image']))
                                     <img src="{{ url($detail['frame']['image']) }}" 
                                          alt="Frame Image" 
-                                         style="max-width: 100px; height: auto;">
+                                         class="img-fluid" 
+                                         style="max-width: 100px;">
                                 @else
                                     N/A
                                 @endif
@@ -116,7 +141,7 @@
                             <td>
                                 {{ $detail['size']['printType']['name'] ?? 'N/A' }} <br>
                                 {{ $detail['size']['name'] ?? 'N/A' }} <br>
-                                {{$detail['size']['dimention'] ?? 'N/A'}}
+                                {{ $detail['size']['dimention'] ?? 'N/A' }}
                             </td>
                         </tr>
                     @endforeach

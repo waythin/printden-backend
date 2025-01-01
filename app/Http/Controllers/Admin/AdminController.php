@@ -75,7 +75,11 @@ class AdminController extends Controller
 		$title = 'Dashboard';
 
 		$orders = Order::orderBy('id', 'desc')->limit(5)->get();
-		return view('admin.dashboard')->with(compact('title', 'orders'));
+
+		$totalOrders = Order::count();
+		$deliveredOrders = Order::where('status', 'delivered')->count();
+		$totalCustomers = Customer::count();
+		return view('admin.dashboard')->with(compact('title', 'orders', 'totalOrders', 'deliveredOrders', 'totalCustomers'));
 	}
 
 	public function contactUsSubmit(Request $request)

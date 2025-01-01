@@ -1,6 +1,9 @@
 @extends('admin.layout.layout')
 @push('styles')
-    <style>
+<style>
+    .table tbody tr:last-child td {
+        border-bottom: none; /* Removes bottom border for the last row */
+    }
     </style>
 @endpush
 @section('title', $title)
@@ -62,7 +65,7 @@
                             <th span="1" style="width: 8%;">Date</th>
                             <th span="1" style="width: 8%;">Service</th>
                             <th span="1" style="width: 10%;">Customer Info</th>
-                            <th span="1" style="width: 8%;">Order Status</th>
+                            <th span="1" style="width: 10;">Order Status</th>
                             <th span="1" style="width: 10%;">Payment Status</th>
                             <th span="1" style="width: 6%;">Method</th>
                             <th span="1" style="width: 10%;">Delivery Charge</th>
@@ -126,17 +129,8 @@
                     serverSide: true,
                     searching: true,
                     lengthChange: false,
-
+                    dom: 'lrtip',
                     
-                    // processing: true,
-                    // //serverSide: true,
-                    // // "scrollY": "false",
-                    // "scrollCollapse": true,
-                    // // paging: true, // Disable pagination
-                    // // lengthMenu: [10, 25, 50, 100], // Optional: Define page length options
-                    // "language": {
-                    //     processing: '<div class="lds-dual-ring"></div>'
-                    // },
                     ajax: {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -157,7 +151,8 @@
                         // { data: null, searchable: false, orderable: false  },
                         {
                             data: 'order_details',
-                            name: 'order_details'
+                            name: 'order_details',
+                            searchable: true 
                         },
                         {
                             data: 'date',
@@ -203,9 +198,11 @@
                     dom: 'lrtip', // Enables the Buttons extension
 
                 });
-                $('.search').keyup(function() {
+
+                $('.search').on('keyup', function() {
                     table.search($(this).val()).draw();
                 });
+
 
 
                 // order pop up
@@ -224,162 +221,90 @@
                     }
                 });
             });
+
              // Listen for changes on the dropdown
-    $(document).on('change', '.status-dropdown', function () {
-        var orderId = $(this).data('id'); // Get order ID from data attribute
-        var status = $(this).val(); // Get the selected status
+            $(document).on('change', '.status-dropdown', function () {
+                var orderId = $(this).data('id'); // Get order ID from data attribute
+                var status = $(this).val(); // Get the selected status
 
-        // Send an AJAX request to update the status
-        $.ajax({
-            url: '{{ route("admin.orders.updateStatus") }}',
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}', // Include CSRF token
-                order_id: orderId,
-                status: status
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Show success toast
-                    Toast.fire({
-                        icon: 'success',
-                        title: response.message
-                    });
-                } else {
-                    // Show error toast
-                    Toast.fire({
-                        icon: 'error',
-                        title: response.message
-                    });
-                }
-            },
-            error: function (xhr) {
-                // Show error toast
-                Toast.fire({
-                    icon: 'error',
-                    title: 'An error occurred. Please try again.'
+                // Send an AJAX request to update the status
+                $.ajax({
+                    url: '{{ route("admin.orders.updateStatus") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // Include CSRF token
+                        order_id: orderId,
+                        status: status
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Show success toast
+                            Toast.fire({
+                                icon: 'success',
+                                title: response.message
+                            });
+                        } else {
+                            // Show error toast
+                            Toast.fire({
+                                icon: 'error',
+                                title: response.message
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        // Show error toast
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.'
+                        });
+                    }
                 });
-            }
-        });
-    });
+            });
 
 
 
 
 
-    // Listen for changes on the payment status dropdown
-    $(document).on('change', '.payment-status-dropdown', function () {
-        var orderId = $(this).data('id'); // Get order ID from data attribute
-        var paymentStatus = $(this).val(); // Get the selected payment status
+                // Listen for changes on the payment status dropdown
+                $(document).on('change', '.payment-status-dropdown', function () {
+                    var orderId = $(this).data('id'); // Get order ID from data attribute
+                    var paymentStatus = $(this).val(); // Get the selected payment status
 
-        // Send an AJAX request to update the payment status
-        $.ajax({
-            url: '{{ route("admin.orders.updatePaymentStatus") }}',
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}', // Include CSRF token
-                order_id: orderId,
-                payment_status: paymentStatus
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Show success toast
-                    Toast.fire({
-                        icon: 'success',
-                        title: response.message
+                    // Send an AJAX request to update the payment status
+                    $.ajax({
+                        url: '{{ route("admin.orders.updatePaymentStatus") }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}', // Include CSRF token
+                            order_id: orderId,
+                            payment_status: paymentStatus
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                // Show success toast
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: response.message
+                                });
+                            } else {
+                                // Show error toast
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: response.message
+                                });
+                            }
+                        },
+                        error: function (xhr) {
+                            // Show error toast
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'An error occurred. Please try again.'
+                            });
+                        }
                     });
-                } else {
-                    // Show error toast
-                    Toast.fire({
-                        icon: 'error',
-                        title: response.message
-                    });
-                }
-            },
-            error: function (xhr) {
-                // Show error toast
-                Toast.fire({
-                    icon: 'error',
-                    title: 'An error occurred. Please try again.'
                 });
-            }
-        });
-    });
-
-                // Handle Filter Form Submission
-                // $(document).on("submit", ".filter-form", function (e) {
-                //     e.preventDefault();
-                //     // Get form data
-                //     var formData = {
-                //         daterange: $('#date_range_value').val()
-                //     };
-                //     //console.log(formData);
-                //     // Reload the DataTable with the new filters
-                //     table.ajax.reload();
-                // });
-                // // Auto-trigger the form submission when product type or date range changes
-                // $(document).on("change", "#type, #date_range_value", function () {
-                //     $(".filter-form").trigger("submit");
-                // });
-                // // Handle Clear Button Click
-                // $(document).on("click", ".clear_btn", function() {
-                //     $('#date_range_value').val('');
-                //     table.ajax.reload();
-                // });
-                // // Highlight search terms on table draw
-                // table.on('draw', function() {
-                //     var body = $(table.table().body());
-                //     body.unhighlight();
-
-                //     // Get the current search term and highlight it
-                //     var searchTerm = table.search();
-                //     if (searchTerm) {
-                //         body.highlight(searchTerm); // Applies highlight to search term
-                //     }
-                // });
-                // $('input[name="daterange"]').daterangepicker({
-                //     opens: 'left',
-                //     autoUpdateInput: false,
-                //     locale: {
-                //         cancelLabel: 'Clear'
-                //     }
-
-                // }, function(start, end, label) {
-                //     $('input[name="daterange"]').val(start.format('MM/DD/YYYY')+" - "+end.format('MM/DD/YYYY'));
-                //     $( "#date_range_value" ).trigger( "change" );
-                //     console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-                //     });
 
 
-                // $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
-                //     $(this).val('');
-                // });
-
-
-                // // Button click event to change status and reload DataTable
-                // $(document).on("click", ".status-toggle", function () {
-                //     $(".status-toggle").removeClass("active");
-                //     $(this).addClass("active");
-                //     selectedType = $(this).attr('data_type');
-                //     reloadDataTable();
-                // });
-
-                //datatable search
-                $('.search').keyup(function() {
-                    table.search($(this).val()).draw();
-                })
-
-                // // Function to reload DataTable with current type and courier
-                // function reloadDataTable() {
-                //     $('.filter-form')[0].reset();
-                //     var url = generateDataTableUrl(); 
-                //     table.ajax.url(url).load();
-                // }
-
-                function generateDataTableUrl() {
-                    var url = '{{ route('admin.orders_datatables') }}';
-                    return url;
-                }
             });
         </script>
     @endpush

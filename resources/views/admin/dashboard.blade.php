@@ -16,11 +16,11 @@
                                 </div>
                             </div>
                             <div class="col-6 text-right">
-                                <div class="h4 mb-0 d-data">10</div>
+                                <div class="h4 mb-0 d-data">{{$totalOrders}}</div>
                                 <div class="d-per-div success" style="background: var(--success-light);">
                                     <h6 class="m-0"><img class="img-fluid"
                                             src="{{ asset('admin/img/icons/success-arrow.svg') }}" alt="success">
-                                        <span>2.5%</span>
+                                        {{-- <span>2.5%</span> --}}
                                     </h6>
                                 </div>
                             </div>
@@ -44,11 +44,11 @@
                                 </div>
                             </div>
                             <div class="col-6 text-right">
-                                <div class="h4 mb-0 d-data">20</div>
+                                <div class="h4 mb-0 d-data">{{$deliveredOrders}}</div>
                                 <div class="d-per-div success" style="background: var(--success-light);">
                                     <h6 class="m-0"><img class="img-fluid"
                                             src="{{ asset('admin/img/icons/success-arrow.svg') }}" alt="success">
-                                        <span>2.5%</span>
+                                        {{-- <span>2.5%</span> --}}
                                     </h6>
                                 </div>
                             </div>
@@ -72,11 +72,11 @@
                                 </div>
                             </div>
                             <div class="col-6 text-right">
-                                <div class="h4 mb-0 d-data">0</div>
+                                <div class="h4 mb-0 d-data">{{$totalCustomers}}</div>
                                 <div class="d-per-div error" style="background: var(--error-light);">
                                     <h6 class="m-0"><img class="img-fluid"
                                             src="{{ asset('admin/img/icons/error-arrow.svg') }}" alt="loss">
-                                        <span>7.5%</span>
+                                        {{-- <span>7.5%</span> --}}
                                     </h6>
                                 </div>
                             </div>
@@ -100,11 +100,11 @@
                                 </div>
                             </div>
                             <div class="col-8 text-right">
-                                <div class="h4 mb-0 d-data">2</span></div>
+                                <div class="h4 mb-0 d-data">0</div>
                                 <div class="d-per-div error" style="background: var(--error-light);">
                                     <h6 class="m-0"><img class="img-fluid"
                                             src="{{ asset('admin/img/icons/error-arrow.svg') }}" alt="loss">
-                                        <span>7.5%</span>
+                                        {{-- <span>7.5%</span> --}}
                                     </h6>
                                 </div>
                             </div>
