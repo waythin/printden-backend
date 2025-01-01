@@ -62,6 +62,10 @@ class OrderController extends Controller
                 $order_no = $data->order_no;
                 return $order_no;
             })
+            ->addColumn('service', function (Order $data) {
+                $service = $data->service->name;
+                return $service;
+            })
             ->addColumn('date', function (Order $data) {
                 $order_date = $data->created_at->format('d-m-Y h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
                 return $order_date;
@@ -119,7 +123,7 @@ class OrderController extends Controller
                             </div>';
                 return $actions;
             })
-            ->rawColumns(['order_details', 'customer_info', 'status', 'action', 'amount', 'payment_status', 'delivery_charge', 'amount'])    
+            ->rawColumns(['order_details', 'customer_info', 'status', 'action', 'amount', 'payment_status', 'delivery_charge', 'amount'])
             ->make(true);
     }
 
@@ -170,9 +174,13 @@ class OrderController extends Controller
     }
 
 
-        public function downloadZip($order_id)
+    public function downloadZip($order_id)
     {
         $order = Order::findOrFail($order_id);
+
+        if (!$order) {
+            return redirect()->back()->with('error_message', 'Something Went wrong');
+        }
 
         $zipFileName = public_path('order_' . $order_id . '.zip');
         $zip = new \ZipArchive;
@@ -184,33 +192,27 @@ class OrderController extends Controller
 
         foreach ($order->orderDetails as $detail) {
             if (!empty($detail->document->file_name)) {
-                // Get the local file system path
+
                 $filePath = public_path($detail->document->file_name); // Generate file path
-            
+
                 // Normalize path to avoid double slashes
                 $filePath = preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $filePath);
-            
-                // dd($filePath); // Debugging output to verify path
-            
+
+
                 if (file_exists($filePath)) {
-                    // Add file to the ZIP
                     $zip->addFile($filePath, basename($detail->document->file_name)); // Add only the file name to ZIP
                 } else {
                     // return response()->json(['error' => 'File does not exist: ' . $filePath], 404);
-                    return redirect()->back()->with('error_message', 'Something Went wrong'); 
+                    return redirect()->back()->with('error_message', 'Something Went wrong');
                 }
             }
         }
-
         $zip->close();
-
         if (!file_exists($zipFileName)) {
+
             return response()->json(['error' => 'ZIP file was not created.'], 500);
         }
-
-        $response = response()->download($zipFileName);
-        unlink($zipFileName); 
-        return $response;
+        return response()->download($zipFileName);
     }
 
 
@@ -241,7 +243,4 @@ class OrderController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Order or payment record not found.']);
     }
-
-    
-
 }

@@ -48,7 +48,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 	
 			Route::get('orders/orders-datatables/{type?}', [OrderController::class, 'ordersDatatables'])->name('admin.orders_datatables');
 			Route::get('order', [OrderController::class, 'orders'])->name('admin.orders');
-			// Route::get('/download-zip/{order_id}', [OrderController::class, 'downloadZip'])->name('download.zip');
+			Route::get('/download-zip/{order_id}', [OrderController::class, 'downloadZip'])->name('download.zip');
 			Route::get('order-details/{id}', [OrderController::class, 'orderDetails'])->name('admin.order-details');
 			Route::post('/admin/orders/update-status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
@@ -63,6 +63,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			// contact us 
 			Route::get('constact-datatables', [AdminController::class, 'contactDatatables'])->name('admin.contact_datatables');
 			Route::get('contact/list', [AdminController::class, 'contactUsList'])->name('admin.contact.list');
+			Route::post('/admin/contact/update-status', [AdminController::class, 'updateContactStatus'])->name('admin.contact.updateStatus');
 
 	
 	

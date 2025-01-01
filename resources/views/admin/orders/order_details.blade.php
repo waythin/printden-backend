@@ -56,12 +56,12 @@
 
         <div class="mt-3 text-right">
             
-            <a href="" class="btn btn-secondary">
-                Download ZIP
-            </a>
-            {{-- <a href="{{ route('download.zip', ['order_id' => $order['id']]) }}" class="btn btn-secondary">
+            {{-- <a href="" class="btn btn-secondary">
                 Download ZIP
             </a> --}}
+            <a href="{{ route('download.zip', ['order_id' => $order['id']]) }}" class="btn btn-secondary">
+                Download ZIP
+            </a>
         </div>
 
         <table class="table table-bordered mt-3">

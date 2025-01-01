@@ -60,6 +60,7 @@
                             {{-- <th span="1" style="width: 5%;"><input type="checkbox" id="select-all"></th> --}}
                             <th span="1" style="width: 8%;">Order No</th>
                             <th span="1" style="width: 8%;">Date</th>
+                            <th span="1" style="width: 8%;">Service</th>
                             <th span="1" style="width: 10%;">Customer Info</th>
                             <th span="1" style="width: 8%;">Order Status</th>
                             <th span="1" style="width: 10%;">Payment Status</th>
@@ -161,6 +162,10 @@
                         {
                             data: 'date',
                             name: 'date'
+                        },
+                        {
+                            data: 'service',
+                            name: 'service'
                         },
                         {
                             data: 'customer_info',

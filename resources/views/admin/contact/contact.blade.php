@@ -43,6 +43,7 @@
                             <th scope="col">Message</th>
                             <th scope="col">Date</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Updated At</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -89,7 +90,8 @@
                         { data: 'phone', name: 'phone' },
                         { data: 'message', name: 'message' },
                         { data: 'date', name: 'date' },
-                        // { data: 'discount_amount', name: 'discount_amount' },
+                        { data: 'status', name: 'status' },
+                        { data: 'updated_date', name: 'updated_date' },
                         // { data: 'discounted_price', name: 'discounted_price' },
                         // { data: 'expire_date', name: 'expire_date' },
                         // { data: 'status', name: 'status', orderable: false, searchable: false },
@@ -100,6 +102,48 @@
                 $('.search').keyup(function() {
                     table.search($(this).val()).draw();
                 });
+
+
+
+
+
+                $(document).on('change', '.contact-status-dropdown', function () {
+                var id = $(this).data('id'); // Get order ID from data attribute
+                var status = $(this).val(); // Get the selected status
+
+                // Send an AJAX request to update the status
+                $.ajax({
+                    url: '{{ route("admin.contact.updateStatus") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // Include CSRF token
+                        id: id,
+                        status: status
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Show success toast
+                            Toast.fire({
+                                icon: 'success',
+                                title: response.message
+                            });
+                        } else {
+                            // Show error toast
+                            Toast.fire({
+                                icon: 'error',
+                                title: response.message
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        // Show error toast
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.'
+                        });
+                    }
+                });
+            });
                 
             });
         </script>

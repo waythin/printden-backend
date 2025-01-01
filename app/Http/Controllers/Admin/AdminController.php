@@ -101,7 +101,7 @@ class AdminController extends Controller
 				'message' => $request->message
 			]);
 
-			return $this->responseWithSuccess($data, 'Contact us Form submitted successfully');
+			return $this->responseWithSuccess($data, 'Form submitted successfully!');
 		} catch (\Throwable $exception) {
 			return $this->responseWithError(null, $exception->getMessage());
 		}
@@ -120,17 +120,26 @@ class AdminController extends Controller
 	{
 		$contactUs = ContactUs::orderBy('id', 'desc')->get();
 		return DataTables::of($contactUs)
-			// ->addColumn('action', function ($data) {
-			// 	$actions = '<a href="javascript:void(0)" class="btn btn-sm btn-danger delete_contact" title="Delete Contact" data-url="' . route('admin.contact.delete', ['id' => $data->id]) . '">
-			// 						<img class="toggle-image-change" src="' . asset('admin/img/icons/delete.svg') . '" width="30">
-			// 					</a>';
-			// 	return $actions;
-			// })
+
+			->addColumn('updated_date', function ($data) {
+				$data = $data->updated_at->format('d-m-Y | h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
+				return $data;
+			})
+			->addColumn('status', function ($data) {
+				$statuses = ['pending', 'responded'];
+				$dropdown = '<select class="form-control contact-status-dropdown" data-id="' . $data->id . '">';
+				foreach ($statuses as $status) {
+					$selected = $data->status === $status ? 'selected' : '';
+					$dropdown .= '<option value="' . $status . '" ' . $selected . '>' . ucfirst($status) . '</option>';
+				}
+				$dropdown .= '</select>';
+				return $dropdown;
+			})
 			->addColumn('date', function ($data) {
-                $date = $data->created_at->format('d-m-Y h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
+                $date = $data->created_at->format('d-m-Y | h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
                 return $date;
             })
-			->rawColumns([])
+			->rawColumns(['status', 'updated_date'])
 			->make(true);
 	}
 
@@ -166,6 +175,23 @@ class AdminController extends Controller
 			->rawColumns([])
 			->make(true);
 	}
+
+
+
+
+	public function updateContactStatus(Request $request)
+    {
+		// dd($request->all());
+        $data = ContactUs::find($request->id);
+        if ($data) {
+            $data->status = $request->status;
+            $data->save();
+
+            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Record not found.']);
+    }
 
 	
 }
