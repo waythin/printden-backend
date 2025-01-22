@@ -619,8 +619,8 @@ $(document).ready(function () {
         e.preventDefault();
         var module = $(this).attr('module');
         var moduleId = $(this).attr('moduleid');
-        url = "/admin/delete-" + module + "/" + moduleId;
-        //console.log(url);
+        url = "/delete-" + module + "/" + moduleId;
+        console.log(url);
         Swal.fire({
             customClass: {
                 icon: 'mt-4'
@@ -642,13 +642,26 @@ $(document).ready(function () {
                     type: 'get',
                     url: url,
                     success: function (response) {
-                        Toast.fire({
-                            icon: 'success',
-                            title: response.success_message
-                        })
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
+                        console.log(response);
+                        if(response.success_message){
+                            Toast.fire({
+                                icon: 'success',
+                                title: response.success_message
+                            })
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        }
+                        else{
+                            Toast.fire({
+                                icon: 'error',
+                                title: response.error_message
+                            })
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        }
+                        
                     },
                     error: function (xhr) {
                         console.log(xhr);

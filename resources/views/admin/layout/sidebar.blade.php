@@ -28,6 +28,12 @@
             <span>Customers Record</span></a>
     </li>
 
+    <li class="nav-item {{ strpos(request()->url(), 'review') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.review') }}">
+            <img class="img-fluid" src="{{ asset('admin/store.svg') }}" />
+            <span>Review Ratings</span></a>
+    </li>
+
     <li class="nav-item {{ strpos(request()->url(), 'contact/list') ? 'active' : '' }}">
         <a class="nav-link" href="{{route('admin.contact.list')}}">
             <img class="img-fluid" src="{{ asset('admin/contact.svg') }}" />

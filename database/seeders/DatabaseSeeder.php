@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ServiceSeeder::class);
         $this->call(FrameSeeder::class);
         $this->call(AlbumSeeder::class);
+        $this->call(ReviewSeeder::class);
 
     }
 }

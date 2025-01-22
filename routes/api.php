@@ -43,7 +43,6 @@ Route::post('/contact-us/submit', [AdminController::class, 'contactUsSubmit']);
 
 
 
-
   // Payment Routes for bKash
   Route::get('/bkash/payment', [App\Http\Controllers\BkashTokenizePaymentController::class,'index']);
   Route::get('/bkash/create-payment', [App\Http\Controllers\BkashTokenizePaymentController::class,'createPayment'])->name('bkash-create-payment');

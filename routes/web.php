@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PriceController;
+use App\Http\Controllers\Admin\ReviewRatingsController;
 use App\Http\Controllers\Admin\SettingsController;
 
 
@@ -42,6 +43,14 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 	
 	
+			// review rating
+			Route::get('review/review-datatables/{type?}', [ReviewRatingsController::class, 'reviewDatatables'])->name('admin.review_datatables');
+			Route::get('review', [ReviewRatingsController::class, 'reviewList'])->name('admin.review');
+			Route::post('review/update-review-status', [ReviewRatingsController::class, 'updateReviewStatus'])->name('admin.orders.updateReviewStatus');
+			Route::post('review-post', [ReviewRatingsController::class, 'postReview'])->name('admin.post.review');
+			Route::get('/delete-review/{id}', [ReviewRatingsController::class, 'deleteReview'])->name('admin.delete.review');
+
+
 	
 	
 	

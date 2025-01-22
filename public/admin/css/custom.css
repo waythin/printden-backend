@@ -6,7 +6,7 @@
   src: url('{{ asset("admin/segoe-ul/Segoe UI.woff") }}') format('woff');
   }
 :root {
-  --primary: #0C1142;
+  --primary: #3f3f3f;
   --secondary: #292929;
   --tertiary:#6f7d83;
   --black:#000000;
