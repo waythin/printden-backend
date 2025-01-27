@@ -42,20 +42,18 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			//Admin Dashboard Route
 			Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 	
-	
 			// review rating
 			Route::get('review/review-datatables/{type?}', [ReviewRatingsController::class, 'reviewDatatables'])->name('admin.review_datatables');
 			Route::get('review', [ReviewRatingsController::class, 'reviewList'])->name('admin.review');
 			Route::post('review/update-review-status', [ReviewRatingsController::class, 'updateReviewStatus'])->name('admin.orders.updateReviewStatus');
 			Route::post('review-post', [ReviewRatingsController::class, 'postReview'])->name('admin.post.review');
 			Route::get('/delete-review/{id}', [ReviewRatingsController::class, 'deleteReview'])->name('admin.delete.review');
-
 	
 			// offer
-			Route::get('offers/datatables', [AdminController::class, 'offerDatatables'])->name('admin.offer_datatables');
+
 			Route::get('offers/list', [AdminController::class, 'offers'])->name('admin.offers');
-			Route::post('offers-post', [AdminController::class, 'postReview'])->name('admin.post.offer');
-			Route::post('offer/update-offer-status', [AdminController::class, 'updateOfferStatus'])->name('admin.offer.updateOfferStatus');
+			Route::post('offers-post', [AdminController::class, 'postOffer'])->name('admin.post.offer');
+			Route::post('update-offer-status', [AdminController::class, 'UpdateOfferStatus'])->name('admin.update_offer_status');
 			Route::get('/delete-offer/{id}', [AdminController::class, 'deleteOffer'])->name('admin.delete.offer');
 
 	
@@ -72,13 +70,10 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			Route::get('customers/datatables', [AdminController::class, 'customerDatatables'])->name('admin.customers_datatables');
 			Route::get('admin/customers', [AdminController::class, 'customers'])->name('admin.customers');
 
-
 			// contact us 
 			Route::get('constact-datatables', [AdminController::class, 'contactDatatables'])->name('admin.contact_datatables');
 			Route::get('contact/list', [AdminController::class, 'contactUsList'])->name('admin.contact.list');
 			Route::post('/admin/contact/update-status', [AdminController::class, 'updateContactStatus'])->name('admin.contact.updateStatus');
-
-	
 	
 			//Setting
 			Route::get('settings/{type?}', [SettingsController::class, 'settings'])->name('admin.settings');

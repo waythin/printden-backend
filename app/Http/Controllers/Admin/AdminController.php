@@ -12,6 +12,7 @@ use App\Models\ContactUs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Offer;
 use App\Models\ReviewRating;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -214,120 +215,119 @@ class AdminController extends Controller
 
 	
 
-	public function offerDatatables(Request $request, $type = 'active')
+	public function offerDatatables(Request $request)
     {
-        $datas = Order::query();
-        // dd("ggwp") ;
-        // pending', 'confirm', 'processing', 'failed', 'success
-        if ($type == "pending") {
-            $datas = $datas->where('status', 'pending');
-            $title = "Pending Orders";
-        } else if ($type == "confirm") {
-            $datas = $datas->where('status', 'confirm');
-            $title = "Confirm Orders";
-        } else if ($type == "processing") {
-            $datas = $datas->where('status', 'processing');
-            $title = "Processing Orders";
-        } else if ($type == "failed") {
-            $datas = $datas->where('status', 'failed');
-            $title = "Failed Orders";
-        } else if ($type == "success") {
-            $datas = $datas->where('status', 'success');
-            $title = "Success Orders";
-        } else if ($type == "all") {
-            $title = "All Orders";
-        }
+        $offers = Offer::orderBy('id', 'desc')->get();
+		return DataTables::of($offers)
 
-
-        $data  = $datas->get();
-        // dd($data);
-        // $datas = $datas
-        //     ->when($request->filled('daterange'), function($query) use ($request) {
-        //         $dates = explode(' - ', $request->daterange);
-        //         $from_date = Carbon::parse($dates[0] ?? 'today')->startOfDay();
-        //         $to_date = Carbon::parse($dates[1] ?? 'today')->endOfDay();
-        //         $query->whereBetween('created_at', [$from_date, $to_date]);
-        //     })
-        //     ->with([
-        //     ])->get();
-
-
-
-        return DataTables::of($datas)
-
-            ->addColumn('order_details', function (Order $data) {
-                $order_no = $data->order_no;
-                return $order_no;
+			// ->addColumn('created_at', function ($data) {
+			// 	$data = $data->created_at->format('d-m-Y | h:i:s A'); 
+			// 	return $data;
+			// })
+			->addColumn('status', function ($data) {
+				$statuses = ['active', 'inactive'];
+				$dropdown = '<select class="form-control offer-status-dropdown" data-id="' . $data->id . '">';
+				foreach ($statuses as $status) {
+					$selected = $data->status === $status ? 'selected' : '';
+					$dropdown .= '<option value="' . $status . '" ' . $selected . '>' . ucfirst($status) . '</option>';
+				}
+				$dropdown .= '</select>';
+				return $dropdown;
+			})
+			->addColumn('date', function ($data) {
+                $date = $data->created_at->format('d-m-Y | h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
+                return $date;
             })
-            ->addColumn('service', function (Order $data) {
-                $service = $data->service->name;
-                return $service;
-            })
-            ->addColumn('date', function (Order $data) {
-                $order_date = $data->created_at->format('d-m-Y h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
-                return $order_date;
-            })
-            ->addColumn('customer_info', function (Order $data) {
-                return $data->customer->name . '<br>' . $data->customer->phone . '<br>' . $data->customer->email;
-            })
-            // ->addColumn('status', function (Order $data) {
-
-            //     return $data->status;
-            // })
-
-            ->addColumn('status', function (Order $data) {
-                $statuses = ['pending', 'confirm', 'processing', 'failed', 'success', 'delivered'];
-                $dropdown = '<select class="form-control status-dropdown" data-id="' . $data->id . '">';
-                foreach ($statuses as $status) {
-                    $selected = $data->status === $status ? 'selected' : '';
-                    $dropdown .= '<option value="' . $status . '" ' . $selected . '>' . ucfirst($status) . '</option>';
-                }
-                $dropdown .= '</select>';
-                return $dropdown;
-            })
-            ->addColumn('payment_method', function (Order $data) {
-                return $data->payment->payment_method;
-            })
-            // ->addColumn('payment_status', function (Order $data) {
-            //     return $data->payment->payment_status;
-            // })
-            ->addColumn('payment_status', function (Order $data) {
-                $statuses = ['pending', 'success', 'failed'];
-                $dropdown = '<select class="form-control payment-status-dropdown" data-id="' . $data->id . '">';
-                foreach ($statuses as $status) {
-                    $selected = $data->payment->payment_status === $status ? 'selected' : '';
-                    $dropdown .= '<option value="' . $status . '" ' . $selected . '>' . ucfirst($status) . '</option>';
-                }
-                $dropdown .= '</select>';
-                return $dropdown;
-            })
-            ->addColumn('amount', function (Order $data) {
-                return $data->total . ' TK <br>' . "Total Payable : " . $data->payment->payment_amount . ' TK';
-            })
-            ->addColumn('delivery_charge', function (Order $data) {
-                $deliveryType = $data->delivery_type === 'inside_dhaka' ? 'Inside Dhaka' : 'Outside Dhaka';
-                return $deliveryType . '<br>' . $data->delivery_charge . ' TK';
-            })
-
-            ->addColumn('action', function (Order $data) {
-                $actions = '<div class="d-flex align-items-center">
-                                <a href="javascript:void(0);" 
-                                   class="btn order_details" 
-                                   title="View Order Details"
-                                   data-url="' . route('admin.order-details', ['id' => $data->id]) . '">
-                                    <img class="toggle-image-change" src="' . asset('admin/img/icons/password.svg') . '" width="30">
-                                </a>
-                            </div>';
-                return $actions;
-            })
-            ->rawColumns(['order_details', 'customer_info', 'status', 'action', 'amount', 'payment_status', 'delivery_charge', 'amount'])
-            ->make(true);
+			->rawColumns(['status'])
+			->make(true);
     }
 
 
     public function offers()
     {
-        $title = 'Orders';
-        return view('admin.orders.orders')->with(compact('title'));
+		$title = 'Offers';
+		$offers = Offer::orderBy('id', 'desc')->get();
+        return view('admin.offer.offer', compact('title', 'offers'));
     }
+
+	public function postOffer(Request $request, $id=null){
+        // dd($request->toArray());
+        try {
+            if ($id == "") {
+                $offer = new Offer();
+                $message = "Offer added Successfully!";
+            }
+            else{
+                $offer = Offer::find($id);
+                $message = "Offer updated Successfully!";
+            }
+            if($request->isMethod('post')){
+                $data = $request->all();
+
+                 $rules = [
+            	    'title' => 'required',
+            	    // 'type' => 'required',
+            	    
+                ];
+                $customMessages = [
+    
+                ];
+                 $validation = Validator::make($data, $rules, $customMessages);
+                 if ($validation->fails()) {
+                    return response()->json([
+                        'validation_error' => $validation->getMessageBag()
+                    ]);
+                }
+
+                $offer->title = $request->title;
+                $offer->type = "percentage";
+                $offer->discount = $request->discount;
+                $offer->start_date = $request->start_date;
+                $offer->end_date = $request->end_date;
+                $offer->status = "active";
+                $offer->description = $request->description;
+                $offer->save();
+                return response()->json(['success_message' => $message]);
+            }
+            else{
+                return response()->json(['data' => $offer]);
+            }
+    
+        } catch (\Throwable $exception) {
+            return response()->json(['error_message' => $exception->getMessage()]);
+        }
+    }
+
+	public function deleteOffer($id){
+        Offer::where('id',$id)->delete();
+        $message = "Offer has been deleted successfully!";
+         return response()->json(['success_message' => $message]);
+    }
+
+	public function updateOfferStatus(Request $request){
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            try{
+                Offer::where('id',$data['data_id'])->update(['status'=>$data['status'],'updated_by'=>$data['updated_by']]);
+                return response()->json(['success_message'=>'Offer Status Updated!']);
+        
+            } catch (\Throwable $exception) {
+                return response()->json(['error_message' => $exception->getMessage()]);
+            }
+        }
+    }
+
+
+	public function offer()
+	{
+		$data = Offer::first();
+		if($data){
+			return $this->responseWithSuccess($data, "offer.", 200);
+		}
+		return $this->responseWithError(null,  "Data not found", 404);
+
+	}
+
+
 }

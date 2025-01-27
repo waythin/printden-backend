@@ -43,6 +43,9 @@ Route::post('/contact-us/submit', [AdminController::class, 'contactUsSubmit']);
 Route::get('/review-rating/list', [AdminController::class, 'reviewList']);
 
 
+// offer 
+Route::get('/offer', [AdminController::class, 'offer']);
+
 
   // Payment Routes for bKash
   Route::get('/bkash/payment', [App\Http\Controllers\BkashTokenizePaymentController::class,'index']);

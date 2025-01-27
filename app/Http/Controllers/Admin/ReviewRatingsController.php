@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Offer;
 use App\Models\ReviewRating;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -90,4 +91,64 @@ class ReviewRatingsController extends Controller
        
         
     }
+
+
+
+    public function postReview(Request $request, $id=null){
+
+        // dd($request->toArray());
+        try {
+            if ($id == "") {
+                $review = new ReviewRating;
+                $message = "Review added Successfully!";
+            }
+            else{
+                $review = ReviewRating::find($id);
+                $message = "Review updated Successfully!";
+            }
+            if($request->isMethod('post')){
+                $data = $request->all();
+
+                 $rules = [
+            	    'name' => 'required',
+            	    'rate' => 'required',
+            	    
+                ];
+                $customMessages = [
+    
+                ];
+                 $validation = Validator::make($data, $rules, $customMessages);
+                 if ($validation->fails()) {
+                    return response()->json([
+                        'validation_error' => $validation->getMessageBag()
+                    ]);
+                }
+
+                $image_name = null;
+                if ($request->hasfile('image')) {
+                    $image_file = $request->file('image');
+                    $image_name = date('Ymdhis') . '.' . $image_file->getClientOriginalExtension();
+                    $image_file->move(public_path('/admin/reviews'), $image_name);
+                }
+    
+
+                $review->name = $request->name;
+                $review->email = $request->email;
+                $review->rate = $request->rate;
+                $review->comment = $request->comment;
+                $review->status = "active";
+                $review->image = $image_name;
+                $review->save();
+                return response()->json(['success_message' => $message]);
+            }
+            else{
+                return response()->json(['data' => $review]);
+            }
+    
+        } catch (\Throwable $exception) {
+            return response()->json(['error_message' => $exception->getMessage()]);
+        }
+    }
+
+   
 }

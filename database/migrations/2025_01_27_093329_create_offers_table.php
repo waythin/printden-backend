@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->enum('type', ['percentage', 'fixed']);
-            $table->double('discount');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->enum('status', ['active', 'inactive']);
-            $table->string('description');
+            $table->double('discount')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
