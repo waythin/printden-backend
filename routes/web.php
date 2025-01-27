@@ -50,10 +50,14 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			Route::post('review-post', [ReviewRatingsController::class, 'postReview'])->name('admin.post.review');
 			Route::get('/delete-review/{id}', [ReviewRatingsController::class, 'deleteReview'])->name('admin.delete.review');
 
+	
+			// offer
+			Route::get('offers/datatables', [AdminController::class, 'offerDatatables'])->name('admin.offer_datatables');
+			Route::get('offers/list', [AdminController::class, 'offers'])->name('admin.offers');
+			Route::post('offers-post', [AdminController::class, 'postReview'])->name('admin.post.offer');
+			Route::post('offer/update-offer-status', [AdminController::class, 'updateOfferStatus'])->name('admin.offer.updateOfferStatus');
+			Route::get('/delete-offer/{id}', [AdminController::class, 'deleteOffer'])->name('admin.delete.offer');
 
-	
-	
-	
 	
 			Route::get('orders/orders-datatables/{type?}', [OrderController::class, 'ordersDatatables'])->name('admin.orders_datatables');
 			Route::get('order', [OrderController::class, 'orders'])->name('admin.orders');

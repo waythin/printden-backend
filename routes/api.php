@@ -40,6 +40,7 @@ Route::post('/service/submit', [ServiceController::class, 'servicePost']);
 
 Route::post('/contact-us/submit', [AdminController::class, 'contactUsSubmit']);
 
+Route::get('/review-rating/list', [AdminController::class, 'reviewList']);
 
 
 

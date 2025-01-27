@@ -34,11 +34,18 @@
             <span>Review Ratings</span></a>
     </li>
 
+    <li class="nav-item {{ strpos(request()->url(), 'offers/list') ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('admin.offers')}}">
+            <img class="img-fluid" src="{{ asset('admin/contact.svg') }}" />
+            <span>Offers</span></a>
+    </li>
+
     <li class="nav-item {{ strpos(request()->url(), 'contact/list') ? 'active' : '' }}">
         <a class="nav-link" href="{{route('admin.contact.list')}}">
             <img class="img-fluid" src="{{ asset('admin/contact.svg') }}" />
             <span>Contact Us</span></a>
     </li>
+
     
   
   <!-- Divider -->
