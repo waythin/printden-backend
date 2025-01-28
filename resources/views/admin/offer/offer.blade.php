@@ -71,8 +71,8 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Validity</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        {{-- <th>Status</th> --}}
+                        {{-- <th>Action</th> --}}
                         <th></th>
                     </tr>
                 </thead>
@@ -106,7 +106,7 @@
                             @else N/A
                             @endif
                         </td>
-                        <td>
+                        {{-- <td>
                             <div class="action-list">
                                 <select class="form-control w-75 updateStatus" module="offer" data_id="{{ $offer['id'] }}" data_admin_id={{ Auth::guard('admin')->user()->id }}>
                                     <option value="active"
@@ -120,17 +120,17 @@
                                    
                                 </select>
                             </div>
-                        </td>
-                        <td>
-                            {{-- <button class="btn show-btn edit-btn click-check" module="offer" type="button" data-whatever="{{ $offer['cupon_code'] }}"
+                        </td> --}}
+                        {{-- <td>
+                            <button class="btn show-btn edit-btn click-check" module="offer" type="button" data-whatever="{{ $offer['cupon_code'] }}"
                                 data-id="{!! $offer['id'] !!}" data-toggle="modal"
                                 data-target=".form_modal" data-url="{{ route('admin.add_edit_offer', $offer['id']) }}">Edit
-                            </button> --}}
+                            </button>
 
                             <a title="Delete Package" href="javascript:void(0)" class="confirmDelete" module="Offer" moduleid="{{ $offer['id'] }}">
                                     <i style="color: #bb1616; font-size:1rem" class="fa fa-trash"></i>
                             </a>
-                        </td>
+                        </td> --}}
                     </tr>
                     @endforeach
                 </tbody>
