@@ -13,7 +13,7 @@ class ReviewRating extends Model
     public function getImageAttribute($value)
     {
         if(!$value){
-            return asset('dummy/no_image.png');
+            return url('dummy/no_image.png');
         }
         return url('/admin/reviews/' . ltrim($value, '/'));
     }
