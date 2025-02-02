@@ -616,11 +616,13 @@ $(document).ready(function () {
 
     //Confirm Deletation (sweet Alert Library)
     $(document).on("click", ".confirmDelete", function (e) {
+
+        // console.log("hiiiiiiss");
         e.preventDefault();
         var module = $(this).attr('module');
         var moduleId = $(this).attr('moduleid');
-        url = "/delete-" + module + "/" + moduleId;
-        console.log(url);
+        url = "/admin/delete-" + module + "/" + moduleId;
+        //console.log(url);
         Swal.fire({
             customClass: {
                 icon: 'mt-4'
@@ -642,26 +644,13 @@ $(document).ready(function () {
                     type: 'get',
                     url: url,
                     success: function (response) {
-                        console.log(response);
-                        if(response.success_message){
-                            Toast.fire({
-                                icon: 'success',
-                                title: response.success_message
-                            })
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1500);
-                        }
-                        else{
-                            Toast.fire({
-                                icon: 'error',
-                                title: response.error_message
-                            })
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1500);
-                        }
-                        
+                        Toast.fire({
+                            icon: 'success',
+                            title: response.success_message
+                        })
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
                     },
                     error: function (xhr) {
                         console.log(xhr);

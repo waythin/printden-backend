@@ -52,9 +52,10 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			// offer
 
 			Route::get('offers/list', [AdminController::class, 'offers'])->name('admin.offers');
-			Route::post('offers-post', [AdminController::class, 'postOffer'])->name('admin.post.offer');
+			Route::match(['get', 'post'], 'add-edit-offer/{id?}', [AdminController::class, 'postOffer'])->name('admin.add_edit_offer');
+
 			Route::post('update-offer-status', [AdminController::class, 'UpdateOfferStatus'])->name('admin.update_offer_status');
-			Route::get('/delete-offer/{id}', [AdminController::class, 'deleteOffer'])->name('admin.delete.offer');
+			Route::get('/delete-offer/{id}', [AdminController::class, 'deleteOffer'])->name('admin.delete_offer');
 
 	
 			Route::get('orders/orders-datatables/{type?}', [OrderController::class, 'ordersDatatables'])->name('admin.orders_datatables');
