@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Print Den | Login</title>
+    <title>PrintR | Login</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -174,7 +174,7 @@
     <div class="container-fluid min-vh-100">
         <div class="row justify-content-center w-100 mx-0" style="padding: 2rem 0rem 2rem 0rem;">
             <div class="col-12">
-                <a class="btn visit-web" href="https://printden.store/">
+                <a class="btn visit-web" href="https://printr.store">
                     {{-- <img class="img-fluid mr-1" src="{{ asset('frontend/images/icons/arrow-left.svg') }}" /> --}}
                     Visit Website  
                 </a>
@@ -207,7 +207,7 @@
                         @endif
 
                         <div class="sidebar-brand-icon">
-                            <img class="img-fluid" src="{{ asset('admin/printden_main.svg') }}" style="width: 80px;" />
+                            <img class="img-fluid" src="{{ asset('admin/printden_main.svg') }}" style="width: 200px;" />
                         </div>
 
                         

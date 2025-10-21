@@ -14,21 +14,21 @@ class FrameSeeder extends Seeder
     public function run(): void
     {
         Frame::create([
-            'name' => "frame 1" , 
-            'slug' => "frame-1" , 
-            'image' => "frame-1.png" , 
+            'name' => "Classic Wood" , 
+            'slug' => "classic-wood" , 
+            'image' => "classic-wood.png" , 
             'status' => 1
         ]);
         Frame::create([
-            'name' => "frame 2" , 
-            'slug' => "frame-2" , 
-            'image' => "frame-2.png" , 
+            'name' => "Modern Black" , 
+            'slug' => "modern-black" , 
+            'image' => "modern-black.png" , 
             'status' => 1
         ]);
         Frame::create([
-            'name' => "frame 3" , 
-            'slug' => "frame-3" , 
-            'image' => "frame-3.png" , 
+            'name' => "Elegant White" , 
+            'slug' => "elegant-white" , 
+            'image' => "elegant-white.png" , 
             'status' => 1
         ]);
     }

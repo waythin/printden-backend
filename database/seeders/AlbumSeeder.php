@@ -14,27 +14,45 @@ class AlbumSeeder extends Seeder
     public function run(): void
     {
         Album::create([
-            'name' => "album 1" , 
-            'slug' => "album-1" , 
-            'image' => "album-1.png" , 
+            'name' => "Square 1" , 
+            'slug' => "square-1" , 
+            'type' => "square" , 
+            'image' => "square-1.jpg" , 
             'status' => 1
         ]);
         Album::create([
-            'name' => "album 2" , 
-            'slug' => "album-2" , 
-            'image' => "album-2.png" , 
+            'name' => "Square 2" , 
+            'slug' => "square-2" , 
+            'type' => "square" , 
+            'image' => "square-2.jpg" , 
             'status' => 1
         ]);
         Album::create([
-            'name' => "album 3" , 
-            'slug' => "album-3" , 
-            'image' => "album-3.png" , 
+            'name' => "Square 3" , 
+            'slug' => "square-3" , 
+            'type' => "square" , 
+            'image' => "square-3.jpg" , 
             'status' => 1
         ]);
         Album::create([
-            'name' => "album 4" , 
-            'slug' => "album-4" , 
-            'image' => "album-4.png" , 
+            'name' => "Rectangle 1" , 
+            'slug' => "rectangle-1" , 
+            'type' => "rectangle" , 
+            'image' => "rectangle-1.jpg" , 
+            'status' => 1
+        ]);
+        Album::create([
+            'name' => "Rectangle 2" , 
+            'slug' => "rectangle-2" , 
+            'type' => "rectangle" , 
+            'image' => "rectangle-2.jpg" , 
+            'status' => 1
+        ]);
+        Album::create([
+            'name' => "Rectangle 3" , 
+            'slug' => "rectangle-3" , 
+            'type' => "rectangle" , 
+            'image' => "rectangle-3.jpg" , 
             'status' => 1
         ]);
     }

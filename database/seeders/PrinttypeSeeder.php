@@ -14,28 +14,34 @@ class PrinttypeSeeder extends Seeder
     public function run(): void
     {
         PrintType::create([
-            'name' => "HD matte sticker paper" , 
-            'slug' => "hd-matte-sticker-paper", 
+            'name' => "Matte Paper" , 
+            'slug' => "matte-paper", 
             'status' => 1,
         ]);
         PrintType::create([
-            'name' => "3mm Board Hd matte pasted frame" , 
-            'slug' => "3mm-board-hd-matte-pasted-frame", 
+            'name' => "Glossy Paper" , 
+            'slug' => "glossy-paper", 
             'status' => 1,
         ]);
         PrintType::create([
-            'name' => "5mm Board Hd matte pasted frame" , 
-            'slug' => "5mm-board-hd-matte-pasted-frame", 
+            'name' => "Canvas Paper" , 
+            'slug' => "canvas-paper", 
             'status' => 1,
         ]);
         PrintType::create([
-            'name' => "Premium Framed Print with Glass" , 
-            'slug' => "premium-framed-print-with-glass", 
+            'name' => "Fine Art Paper" , 
+            'slug' => "fine-art-paper", 
             'status' => 1,
         ]);
         PrintType::create([
-            'name' => "Premium Framed Print wothout glass", 
-            'slug' => "premium-framed-print-without-glass", 
+            'name' => "Dry Matte Paper", 
+            'slug' => "dry-matte-paper", 
+            'status' => 1,
+        ]);
+        
+        PrintType::create([
+            'name' => "Luster Paper", 
+            'slug' => "luster-paper", 
             'status' => 1,
         ]);
     }
