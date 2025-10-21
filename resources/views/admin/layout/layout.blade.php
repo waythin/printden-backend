@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="Md. Imranul Islam">
 
-    <title>Print Den | @yield('title')</title>
+    <title>PrintR | @yield('title')</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">

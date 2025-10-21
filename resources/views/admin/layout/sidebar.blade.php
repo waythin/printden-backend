@@ -4,7 +4,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
         <div class="sidebar-brand-icon">
-            <img class="img-fluid" src="{{ asset('admin/printden_main.svg') }}" style="width: 80px;" />
+            <img class="img-fluid" src="{{ asset('admin/printden_main.svg') }}" style="width: 130px;" />
         </div>
     </a>
 

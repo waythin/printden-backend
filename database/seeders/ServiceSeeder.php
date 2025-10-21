@@ -33,6 +33,21 @@ class ServiceSeeder extends Seeder
             'slug' => "photo-album" , 
             'status' => 1
         ]);
+        Service::create([
+            'name' => "Print Mug" , 
+            'slug' => "print-mug" , 
+            'status' => 0
+        ]);
+        Service::create([
+            'name' => "T-shirt Print" , 
+            'slug' => "tshirt-print" , 
+            'status' => 0
+        ]);
+        Service::create([
+            'name' => "Tote Bag" , 
+            'slug' => "tote-bag" , 
+            'status' => 0
+        ]);
         
     }
 }
