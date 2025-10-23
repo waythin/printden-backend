@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_no');
-            $table->double('total')->nullable();
-            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+
+            $table->string('order_no');
+            $table->double('sub_total')->nullable();
+            $table->double('total')->nullable();
             $table->enum('status', ['pending', 'confirm', 'processing', 'failed', 'success', 'delivered'])->default('pending');
-            $table->text('location')->nullable();
+            $table->text('location')->nullable(); //address
             $table->enum('delivery_type', ['inside_dhaka', 'outside_dhaka']);
             $table->double('delivery_charge');
             $table->text('note')->nullable();

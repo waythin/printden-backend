@@ -3,6 +3,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\EventCategoryController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PriceController;
 use App\Http\Controllers\Admin\ReviewRatingsController;
@@ -49,6 +51,20 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			Route::post('review-post', [ReviewRatingsController::class, 'postReview'])->name('admin.post.review');
 			Route::get('/delete-review/{id}', [ReviewRatingsController::class, 'deleteReview'])->name('admin.delete.review');
 	
+			// event
+			Route::get('event/event-datatables/{type?}', [EventController::class, 'eventDatatables'])->name('admin.event_datatables');
+			Route::get('event', [EventController::class, 'eventList'])->name('admin.event');
+			Route::post('event/update-review-status', [EventController::class, 'updateEventStatus'])->name('admin.updateEventStatus');
+			Route::post('event-post', [EventController::class, 'postEvent'])->name('admin.post.event');
+			Route::get('/delete-event/{id}', [EventController::class, 'deleteEvent'])->name('admin.delete.event');
+
+			// event category
+			Route::get('event/category-datatables/{type?}', [EventCategoryController::class, 'categoryDatatables'])->name('admin.category_datatables');
+			Route::get('category', [EventCategoryController::class, 'categoryList'])->name('admin.category');
+			Route::post('category/update-review-status', [EventCategoryController::class, 'updateEventCategoryStatus'])->name('admin.updateCategoryStatus');
+			Route::post('category-post', [EventCategoryController::class, 'postEventCategory'])->name('admin.post.category');
+			Route::get('/delete-category/{id}', [EventCategoryController::class, 'deleteEventCategory'])->name('admin.delete.category');
+
 			// offer
 
 			Route::get('offers/list', [AdminController::class, 'offers'])->name('admin.offers');
