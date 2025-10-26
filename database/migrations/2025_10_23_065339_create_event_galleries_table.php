@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
             $table->foreignId('event_category_id')->constrained('event_categories')->cascadeOnDelete();
-            $table->string('file_name');
+            $table->string('image_url');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('description')->nullable();
             $table->timestamps();

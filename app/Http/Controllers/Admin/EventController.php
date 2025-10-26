@@ -15,16 +15,6 @@ class EventController extends Controller
 		$events = Event::orderBy('id', 'desc')->get();
 		return DataTables::of($events)
 
-			// ->addColumn('name', function ($data) {
-			// 	$data = $data->updated_at->format('d-m-Y | h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
-			// 	return $data;
-			// })
-
-            ->addColumn('image', function ($data) {
-                $imageUrl = $data->image ? asset($data->image) : ''; // Default image if no image exists
-                return '<img src="' . $imageUrl . '" alt="Event Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">';
-            })
-
 			->addColumn('status', function ($data) {
 				$statuses = ['active', 'inactive'];
 				$dropdown = '<select class="form-control event-status-dropdown" data-id="' . $data->id . '">';
@@ -35,10 +25,6 @@ class EventController extends Controller
 				$dropdown .= '</select>';
 				return $dropdown;
 			})
-			->addColumn('date', function ($data) {
-                $date = $data->created_at->format('d-m-Y | h:i:s A'); // Format: Day-Month-Year Hour:Minute:Second AM/PM
-                return $date;
-            })
             ->addColumn('action', function ( $data){
                 $actionButtons = '<div class="d-flex align-items-center">
                  
@@ -51,7 +37,7 @@ class EventController extends Controller
 
                 return $actionButtons;
             })
-			->rawColumns(['status', 'updated_date', 'action', 'image'])
+			->rawColumns(['status', 'action'])
 			->make(true);
 	}
 
@@ -59,24 +45,23 @@ class EventController extends Controller
 	public function eventList()
     {
         $title = 'Events';
-        return view('admin.events.events', compact('title'));
+        $events = Event::orderBy('id', 'desc')->get();
+        return view('admin.events.events', compact('title','events'));
     }
-
 
     public function updateEventStatus(Request $request)
     {
         // dump($request->all());
-        $data = Event::find($request->id);
+        $data = Event::find($request->data_id);
         if ($data) {
             $data->status = $request->status;
             $data->save();
 
-            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+            return response()->json(['success_message' => 'Status updated successfully.']);
         }
 
-        return response()->json(['success' => false, 'message' => 'Record not found.']);
+            return response()->json(['error_message' => 'Record not found.']);
     }
-
 
     public function deleteEvent($id)
     {
@@ -109,7 +94,7 @@ class EventController extends Controller
                 $data = $request->all();
 
                  $rules = [
-            	    'name' => 'required',
+            	    'title' => 'required',
             	    
                 ];
                 $customMessages = [
@@ -130,7 +115,7 @@ class EventController extends Controller
                 // }
     
 
-                $event->name = $request->name;
+                $event->title = $request->title;
                 $event->description = $request->description;
                 $event->status = "active";
                 //$event->image = $image_name;

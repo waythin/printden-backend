@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class EventCategory extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+
+    public function galleries()
+    {
+        return $this->hasMany(EventGallery::class);
+    }
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
 }

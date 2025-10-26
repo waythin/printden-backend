@@ -6,8 +6,8 @@
 <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">{{ $title }}</h1>
-        <button class="btn mt-4 mt-sm-0 add-btn category" module="Category" type="button" data-toggle="modal" data-target="#form_modal">
-            <img class="img-fluid" src="{{asset('admin/img/icons/plus-white.svg')}}" alt="plus"> Add Category
+        <button class="btn mt-4 mt-sm-0 add-btn gallery" module="Gallery" type="button" data-toggle="modal" data-target="#form_modal">
+            <img class="img-fluid" src="{{asset('admin/img/icons/plus-white.svg')}}" alt="plus"> Add Gallery
         </button>
     </div>
     {{-- modal start --}}
@@ -18,32 +18,35 @@
                 <div class="modal-content pl-2">
 
                     <div class="modal-header">
-                        <h5 class="modal-title pt-3" id=""> Add Category </h5>
+                        <h5 class="modal-title pt-3" id=""> Add Gallery </h5>
                     </div>
                     <div class="modal-body">
-                        <form class="form" action="{{ route('admin.post.category') }}" method="post" enctype="multipart/form-data">
+                        <form class="form" action="{{ route('admin.post.gallery') }}" method="post" enctype="multipart/form-data">
                             @csrf
-                            {{-- <input type="hidden" class="form-control" name="id" id="id" value="">
-                            <input type="hidden" class="form-control" name="admin_id" id="admin_id" value="{{ Auth::guard('admin')->user()->id }}"> --}}
 
                             <div class="form-group">
                                 <label class="col-form-label" for="event_id">Event <span class="mandatory">*</span></label>
                                 <select class="form-control" name="event_id" required>
                                     @foreach ($events as $key => $event)
-                                        <option value="{{ $event->id }}" {{ old('event_id', $category['event_id'] ?? '') == $event->id ? 'selected' : '' }}>
+                                        <option value="{{ $event->id }}" {{ old('event_id', $gallery['event_id'] ?? '') == $event->id ? 'selected' : '' }}>
                                             {{ $event->title }}
                                         </option>
                                     @endforeach  
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="title" class="col-form-label">Title</label>
-                                <input type="text" class="form-control" name="title"
-                                    value="{{ old('title', $category['title'] ?? '') }}" placeholder="Type title..."> 
+                                <label class="col-form-label" for="event_category_id">Event <span class="mandatory">*</span></label>
+                                <select class="form-control" name="event_category_id" required>
+                                    @foreach ($categories as $key => $cat)
+                                        <option value="{{ $cat->id }}" {{ old('event_category_id', $gallery['event_category_id'] ?? '') == $cat->id ? 'selected' : '' }}>
+                                            {{ $cat->title }}
+                                        </option>
+                                    @endforeach  
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="description" class="col-form-label">Description</label>
-                                <textarea class="form-control"  name="description" placeholder="Type description...">{{ old('description', $category['description'] ?? '') }}</textarea>
+                                <label for="image_url" class="col-form-label">Images</label>
+                                <input type="file" class="form-control" id="imageurl" name="image_url[]" multiple required>
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -60,41 +63,35 @@
         
     <div class="row padding-top">
         <div class="col-lg-12">
-            @if(!empty($categories))
+            @if(!empty($events))
             <div class="table-responsive">
             <table class="table" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>Event</th>
                         <th>Category</th>
-                        <th>Details</th>
+                        <th>Image</th>
                         <th>Status</th>
                         <th>Action</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($categories as $key => $cat)
+                    @foreach ($galleries as $key => $gal)
                     <tr>
-                        <td>{{ $cat['event']['title'] }}</td>
-                        <td>{{ $cat['title'] }}</td>
+                        <td>{{ $gal['event']['title'] }}</td>
+                        <td>{{ $gal['category']['title'] }}</td>
                         <td>
-                            @if(!empty($cat['description']))
-                                {{ $cat['description'] }}%
-                            @else N/A
-                            @endif
-                        </td>
-                        <td>
+                            <img src="{{ asset($gal['image_url']) }}" class="img-thumbnail" alt="" style="max-width: 7rem;">
                         </td>
                         <td>
                             <div class="action-list">
-                                <select class="form-control w-75 updateStatus" module="category" data_id="{{ $cat['id'] }}" data_admin_id={{ Auth::guard('admin')->user()->id }}>
+                                <select class="form-control w-75 updateStatus" module="gallery" data_id="{{ $gal['id'] }}" data_admin_id={{ Auth::guard('admin')->user()->id }}>
                                     <option value="active"
-                                        @if (!empty($cat['status']) && $cat['status'] == 'active') selected @endif>
+                                        @if (!empty($gal['status']) && $gal['status'] == 'active') selected @endif>
                                         Active
                                     </option>
                                     <option value="inactive"
-                                        @if (!empty($cat['status']) && $cat['status'] == 'inactive') selected @endif>
+                                        @if (!empty($gal['status']) && $gal['status'] == 'inactive') selected @endif>
                                         Inactive
                                     </option>
                                    
@@ -102,12 +99,12 @@
                             </div>
                         </td> 
                         <td>
-                            <button class="btn show-btn edit-btn click-check" module="category" type="button"
-                                data-id="{!! $cat['id'] !!}" data-toggle="modal"
-                                data-target=".form_modal" data-url="{{ route('admin.post.category', $cat['id']) }}">Edit
+                            <button class="btn show-btn edit-btn click-check" module="gallery" type="button"
+                                data-id="{!! $gal['id'] !!}" data-toggle="modal"
+                                data-target=".form_modal" data-url="{{ route('admin.post.gallery', $gal['id']) }}">Edit
                             </button>
 
-                            <a title="Delete Event" href="javascript:void(0)" class="confirmDelete" module="Event" moduleid="{{ $cat['id'] }}">
+                            <a title="Delete Event" href="javascript:void(0)" class="confirmDelete" module="Event" moduleid="{{ $gal['id'] }}">
                                 <i style="color: #bb1616; font-size:1rem" class="fa fa-trash"></i>
                             </a>
                         </td>
@@ -117,7 +114,7 @@
             </table>
         </div>
         @else
-            <h6 class="padding-top">No Category Available</h6>
+            <h6 class="padding-top">No Image Available</h6>
         @endif
         </div>
     </div>

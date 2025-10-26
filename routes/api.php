@@ -33,9 +33,11 @@ Route::get('/size/list', [ServiceController::class, 'sizeList']);
 
 Route::get('/frame/list', [ServiceController::class, 'frameList']);
 Route::get('/album/list', [ServiceController::class, 'albumList']);
+Route::get('/event/list', [ServiceController::class, 'eventList']);
 
 
 Route::post('/service/submit', [ServiceController::class, 'servicePost']);
+Route::post('/customer/submit', [ServiceController::class, 'customerInfoPost']);
 
 
 Route::post('/contact-us/submit', [AdminController::class, 'contactUsSubmit']);

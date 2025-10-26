@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug');
             $table->string('email');
             $table->string('phone');
+            $table->string('type',50)->nullable(); //only for image download
             $table->timestamps();
         });
     }

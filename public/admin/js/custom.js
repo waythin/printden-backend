@@ -259,20 +259,6 @@ $(document).ready(function () {
         }
     });
 
-    // // Find clicked btn (add/ edit)
-    // $(document).on("click", ".offer", function () {
-    //     var module = $(this).attr("module");
-    //     if ($(this).hasClass("add-btn")) {
-    //         $('.offer_modal').find('.modal-title').html("Add " + module);
-    //         $('.offer_modal').find('form').trigger('reset');
-    //         $('.offer_modal').find('.select-box .selected').html('Select Options');
-    //        // console.log( $('.form_modal').find('.select-box .selected'));
-    //     } else if ($(this).hasClass("show-btn")) {
-    //         $('.offer_modal').find('.modal-title').html("Edit " + module);
-    //         $('.offer_modal').find('.select-box .selected').html('Select Options');
-    //     }
-    // });
-
     //ALL form Edit
     $(document).on("click", ".show-btn", function (e) {
         e.preventDefault();
@@ -280,8 +266,7 @@ $(document).ready(function () {
         var id = $(this).attr("data-id");
         var url = $(this).attr("data-url");
         var modal = $('.form_modal');
-        modal.find('#sugg_modal_div').html('');
-
+        console.log(module);
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -290,93 +275,21 @@ $(document).ready(function () {
             url: url,
             success: function (response) {
                 
-                //console.log(response.data); 
-                if(module === 'MerchantProduct'){
-                    // console.log(response.mp_cat_id);
-                    // console.log(response.mp_pro_id);
-                    // console.log(response.mp_child_ids);
-                    // console.log(response.selected_cat_products);
-                    // console.log(response.product_childs);
-                    var merchant_product = ``;
-                    var merchant_product_childs = ``;
-                    
-                    response.selected_cat_products.forEach(function (categoryProduct, index) {
-                        merchant_product += `<option value="${categoryProduct.id}" ${categoryProduct.id==response.mp_pro_id && 'selected'} >${categoryProduct.name}</option>`;
-                    });
-                    // console.log(merchant_product);
-                    $("#merchant-product").html(merchant_product);
-                    $('#merchant-product').selectpicker('refresh');
-                    var selectedOptions = [];
-                    response.product_childs.forEach(function (childProduct, index) {
-                        merchant_product_childs += `<div class="option">
-                        <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input child-product-checkbox" id="child-product-${childProduct.id}" name="product_child_id[]" 
-                        value="${childProduct.id}" title="${childProduct.name}"  ${response.mp_child_ids.includes(childProduct.id) ? 'checked="checked"' : ''}>
-                            <label class="custom-control-label" for="child-product-${childProduct.id}">${childProduct.name}</label>
-                        </div>
-                    </div>`;
-                    
-                    if(response.mp_child_ids.includes(childProduct.id)){
-                        selectedOptions.push(childProduct.name);
-                    }
-                    });
-                    $("#child_product").html(merchant_product_childs);
-                    $("#merchant-product-child-select .selected").text(selectedOptions.length > 0 ? selectedOptions.join(", ") : "Select Child Product");
-                }
-                $("#product_child_append").html('');
-                if (response.data.child_products && response.data.child_products.length > 0) {
-                    
-                    // Iterate over the child_products and append them to the form
-                    response.data.child_products.forEach(function (childProduct, index) {
-                        var html = '<div class="product_child_div" id="product_child_item_' + index + '">';
-                        html += '<input type="text" class="form-control mb-2 mr-2" name="product_child_name[]" value="' + childProduct.name + '" placeholder="Type product child name...">';
-                        html += '<button class="btn product-child-item-cross cross-btn mb-2" data-id="product_child_item_' + index + '">';
-                        html += '<img src="/admin/img/icons/cancel.svg">';
-                        html += '</button></div>';
-                
-                        // Append the generated HTML to the container
-                        $("#product_child_append").append(html);
-                    });
-                    $("#add-product-child").data('index', response.data.child_products.length);
-                }
-
+                console.log(response.data); 
 
                 modal.find('.form').attr('action', url);
-                console.log(response.data);
+                console.log(url);
+                if (module === 'gallery') {
+                    // Remove the old input
+                    $('#imageurl').replaceWith(
+                        '<input type="file" class="form-control" id="imageurl" name="image_url">'
+                    );
+                }
                 $(".option input[type='checkbox']").prop('checked', false);
                 $.each(response.data, function (field_name, value) {
                     //console.log(field_name + ':'+value);
                     var input_field = modal.find('[name=' + field_name + ']');
-                    var checkboxes = modal.find('[name="' + field_name + '[]"]');
                     
-                    if(checkboxes){
-
-                    //console.log(modal.find('[name="' + field_name + '[]"]'));
-                    //$("#specification .selected").html('Select Options'); 
-                      
-                    $(checkboxes).each(function(){
-                        var checkboxValue = $(this).val();
-                        
-                        // Check if the checkbox value is in the array
-                        if ($(this).hasClass('category-checkbox') && checkboxValue==value) {
-                          $(this).prop('checked', true);
-                          $(".option input[type='checkbox']").change();
-                        }
-                        var valueArray = value.split(',');
-                        //console.log(valueArray);
-                        // Check if the checkbox has the class 'specs-checkbox' and its value is in the 'value' array
-                        if ($(this).hasClass('specs-checkbox') && $.inArray(checkboxValue, valueArray) !== -1) {
-                            //console.log(checkboxValue+":"+value);
-                            $(this).prop('checked', true);
-                            $(".option input[type='checkbox']").change();
-                        }
-                        if ($(this).hasClass('industry-checkbox') && $.inArray(checkboxValue, valueArray) !== -1) {
-                            //console.log(checkboxValue+":"+value);
-                            $(this).prop('checked', true);
-                            $(".option input[type='checkbox']").change();
-                        }
-                      });
-                    }
 
                     if (input_field.attr('name') == 'details') {
                         CKEDITOR.instances['details'].setData(value)
@@ -384,8 +297,6 @@ $(document).ready(function () {
                     if (input_field.attr('type') == 'file') {
                         if (input_field.attr('name') == 'image_url') {
                             input_field.closest(".form-group").find(".append-file").html('<img class="img-thumbnail" style="width: 7rem;" src="/' + value + '" alt="Image">');
-                        } else if (input_field.attr('name') == 'attachment_url') {
-                            input_field.closest(".form-group").find(".append-file").html('<a target="_blank" href="/' + value + '" class="" >View Attachment</a>');
                         }
                         //console.log(input_field.next());
                     }
@@ -394,18 +305,6 @@ $(document).ready(function () {
                     }
 
                 })
-                // $('.selected').click();
-                // if (response.data.suggestedby) {
-                //     modal.find('.modal-title').html('Accept, Reject or Modify Industry');
-                //     var html = '<p style="font-size:.8rem;">Suggested by</p>';
-                //     html += '<div class="d-flex">';
-                //     html += '<img class="tbl-img-thumbnail" src="/' + response.data.suggestedby.image + '"/>';
-                //     html += '<div class="pl-3">';
-                //     html += '<p class="m-0">' + response.data.suggestedby.name + '</p>';
-                //     html += '<a href="#" target="_blank">' + response.data.suggestedby.merchant.c_name + '</a>';
-                //     html += '</div></div >';
-                //     modal.find('#sugg_modal_div').append(html);
-                // }
             },
             error: function (xhr) {
                 console.log(xhr);
@@ -416,136 +315,7 @@ $(document).ready(function () {
             }
         });
     });
-    //ALL suggestion form submit
-    $(document).on("click", ".sugg-btn", function (e) {
-        e.preventDefault();
-        var form = $('.form_sugg');
-        var url = form.attr('action');
-        var modal = $('.form_modal');
-        $(document).find("span.text-danger").remove();
-        var id = form.find('#id').val();
-        var admin_id = form.find('#admin_id').val();
-        var status = $(this).data('value');
-        url = url + "/" + id;
-        var form_data = form.serialize() + '&approved_by=' + admin_id + '&updated_by=' + admin_id + '&status=' + status;
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: 'post',
-            url: url,
-            data: form_data,
-            success: function (response) {
-                if (response.success_message) {
-                    modal.hide();
-                    Toast.fire({
-                        icon: 'success',
-                        title: response.success_message
-                    })
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
 
-                }
-                else if (response.error_message) {
-
-                    Swal.fire({
-                        customClass: {
-                            icon: 'mt-4'
-                        },
-                        position: 'center',
-                        icon: 'error',
-                        title: response.error_message,
-                        showConfirmButton: true,
-                        // timer: 2000
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
-                }
-                else if (response.validation_error) {
-                    console.log(response.validation_error);
-                    $.each(response.validation_error, function (field_name, error) {
-                        $(document).find('[name=' + field_name + ']').after('<span class="text-strong text-danger">' + error + '</span>')
-                    })
-
-                }
-            },
-            error: function (xhr) {
-                console.log(xhr);
-                Toast.fire({
-                    icon: 'error',
-                    title: "Something went wrong"
-                })
-            }
-        });
-    });
-    // Category update
-    $(document).on("click", ".category-sugg-btn", function (e) {
-        e.preventDefault();
-        var form = $('.form_sugg_category');
-        var url = form.attr('action');
-        var modal = $('.form_modal');
-        $(document).find("span.text-danger").remove();
-        var id = form.find('#id').val();
-        var admin_id = form.find('#admin_id').val();
-        var status = $(this).data('value');
-        url = url + "/" + id;
-        var form_data = form.serialize() + '&approved_by=' + admin_id + '&updated_by=' + admin_id + '&status=' + status;
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: 'post',
-            url: url,
-            data: form_data,
-            success: function (response) {
-                if (response.success_message) {
-                    modal.hide();
-                    Toast.fire({
-                        icon: 'success',
-                        title: response.success_message
-                    })
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
-
-                }
-                else if (response.error_message) {
-
-                    Swal.fire({
-                        customClass: {
-                            icon: 'mt-4'
-                        },
-                        position: 'center',
-                        icon: 'error',
-                        title: response.error_message,
-                        showConfirmButton: true,
-                        // timer: 2000
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
-                }
-                else if (response.validation_error) {
-                    console.log(response.validation_error);
-                    $.each(response.validation_error, function (field_name, error) {
-                        $(document).find('[name=' + field_name + ']').after('<span class="text-strong text-danger">' + error + '</span>')
-                    })
-
-                }
-            },
-            error: function (xhr) {
-                console.log(xhr);
-                Toast.fire({
-                    icon: 'error',
-                    title: "Something went wrong"
-                })
-            }
-        });
-    });
     //Confirm Change Status (sweet Alert Library)
     $(document).on("change", ".updateStatus", function (e) {
         e.preventDefault();
@@ -662,191 +432,6 @@ $(document).ready(function () {
                 });
             }
         })
-    });
-
-    // on category select get products (RFQ section)
-    var rfq_item_key = null;
-    $(document).on("change", ".rfq-cat-select", function () {
-        var category_id = $(this).find(":selected").val();
-    
-        var dataName = $(this).find(':selected').data('name'); // Get the data-name attribute value
-        rfq_item_key = $(this).find(':selected').data('key');
-        console.log("Category ID: " + category_id);
-        console.log("Data Name: " + dataName);
-        console.log("rfq_item_key: " + rfq_item_key);
-
-        var url = "/admin/single-cat-products/" + category_id;
-        var current_product_div = $(this).parent().siblings().find('.rfq-product-select');
-        //console.log(current_div);
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: 'get',
-            url: url,
-            success: function (response) {
-                //console.log(response.data);
-                current_product_div.empty();
-                current_product_div.append('<option value="#" dataName="#">Select product</option>');
-                $.each(response.data, function (index, value) {
-                    current_product_div.append('<option value="' + value.id + '" dataName="' + value.name + '">' + value.name + '</option>');
-
-                })
-            },
-            error: function (xhr) {
-                console.log(xhr);
-                Toast.fire({
-                    icon: 'error',
-                    title: "Something went wrong"
-                })
-            }
-        });
-    });
-    
-    // on product select get product details (unit) (RFQ section)
-    $(document).on("change", ".rfq-product-select", function () {
-        var product_id = $(this).find(":selected").val();
-        var url = "/admin/single-product/" + product_id;
-        var current_product_child_div = $(this).parent().siblings().find('.rfq-product-child-select');
-        //console.log(current_product_child_div);
-        var rfq_qty_div = $(this).parent().siblings('.rfq-qty-div');
-        var rfq_specs_div = $(this).parent().siblings('.append-rfq-spacs');
-        index = $('#add-rfq-item').data('index')-1;
-        console.log(index);
-        if(rfq_item_key){
-            index = rfq_item_key;
-        }
-        console.log(index);
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: 'get',
-            url: url,
-            success: function (response) {
-               //console.log(response.data);
-                rfq_qty_div.find('label').text('');
-                rfq_qty_div.find('.product_unit').val();
-                rfq_specs_div.empty();
-                rfq_qty_div.find('label').text(response.data.unit.name);
-                rfq_qty_div.find('.product_unit').val(response.data.unit.id);
-                if(response.data.child_products && response.data.child_products.length > 0){
-                    current_product_child_div.empty();
-                    current_product_child_div.append('<option value="" dataName="">Select sub-category</option>');
-                    $.each(response.data.child_products, function (index, value) {
-                        current_product_child_div.append('<option value="' + value.id + '" dataName="' + value.name + '">' + value.name + '</option>');
-
-                    })
-                }else{
-                    current_product_child_div.empty();
-                    current_product_child_div.append('<option value="" dataName="">Select sub-category</option>');
-                    current_product_child_div.prop('disabled', true);
-                }
-                if (response.data.specification_id) {
-                    var specs = response.data.specification_id.split(',');
-                    var html = '';
-                    html += '<div class="row justify-content-left rfq-spacs-div">';
-                    //console.log(specs.length);
-                    $.each(specs, function (i, value) {
-                        
-                        //var randNum =  Math.floor(Math.random() * (4 - 2 + 1)) + 2;
-                        //var randNum =  Math.floor(10 / specs.length );
-                        var randNum = Math.max(3, Math.min(10, Math.floor(10 / specs.length)));
-                        
-                        html += '<div class="form-group col-lg-'+randNum+'">';
-                        html += '<input type="text" class="form-control" name="items[' + index + '][description]['+value+']" value="" placeholder="'+value+'">';
-                        html += '</div>';
-
-                    })
-                    html += `<div class="file-div  col-lg-2">
-                                <div class="attch-file-show" id="fileShowContainer` + index + `"></div>
-                                <div class="att-btn-position">
-                                <div class="attach-btn-area">
-                                    <label for="fileInput" data-index=` + index + `
-                                        class="btn btn-outline-primary bg-white attach-btn addAttachment">
-                                        <span>+ Attachment</span>
-                                    </label>
-                                    <div class="d-flex">
-                                        <input type="file" accept=".pdf,.doc,.docx,image/*"
-                                            name="items[` + index + `][attachments][]"  data-index=`+ index +` class="rfq-attachment attach-upload border border-primary"
-                                            id="attachUpload` + index + `" value="">
-                                        <div id="attachmentContainer` + index + `">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div></div>`;
-                    
-                    rfq_specs_div.append(html);
-                }
-                
-            },
-            error: function (xhr) {
-                console.log(xhr);
-                Toast.fire({
-                    icon: 'error',
-                    title: "Something went wrong"
-                })
-            }
-        });
-    });
-    var attachmentIndex = 0;
-    $(document).on('click', '.addAttachment', function() {
-        var dataIndex = $(this).data('index'); // rfq index
-        
-        const originalInputField = $('#attachUpload'+dataIndex);
-        attachmentIndex++;
-        //console.log(attachmentIndex);
-        const newInputField = originalInputField.clone();
-        //console.log(newInputField);
-        const newId = `attachUpload${dataIndex}-${attachmentIndex}`;
-        newInputField.attr('id', newId);
-        newInputField.attr('name', 'items[' + dataIndex + '][attachments][]');
-        newInputField.appendTo('#attachmentContainer'+dataIndex);
-
-        if (attachmentIndex > 0) {
-            newInputField.click(); // Trigger the click event on the new file input
-        }
-    });
-
-
-     $(document).on('click', '.rfq-file-cross', function() {
-       
-        var fileId = $(this).data('index');
-        var ID = $(this).data('id');
-        // console.log(fileId);
-        // console.log(ID);
-            if (ID) {
-                // var key = $(this).closest('[data-key]').data('key'); // Retrieve the key dynamically
-                // console.log(key);
-                var hiddenInput = $(`input[name="items[${fileId}][removed_items][]"]`);
-                
-                if (hiddenInput.length) {
-                    hiddenInput.val(hiddenInput.val() + ',' + ID);
-                } else {
-                    var newHiddenInput = `<input type="hidden" name="items[${fileId}][removed_items][]" value="${ID}">`;
-                    $(this).closest('form').append(newHiddenInput);
-                }
-            }
-        
-            $('#' + fileId).remove();
-            $('#' + fileId + '_fileShow').remove();
-        });
-
-    $(document).on('change', '.rfq-attachment', function() {
-        const fileName = $(this).val().split('\\').pop();
-        const fileId = $(this).attr('id'); // Get the ID of the input field
-        var index = $(this).data('index');
-       // console.log(fileName+ "  "+fileId + "  "+index);
-        const fileShowArea = `<div class="d-flex" id="${fileId}_fileShow">
-                            <div class="file-show-area">
-                                ${fileName}
-                                <button type="button" class="btn rfq-file-cross"  data-index="${fileId}">
-                                <img src="${assetUrl}" alt="">
-                                </button>
-                            </div>
-                        </div>`;
-        $('#fileShowContainer'+ index).append(fileShowArea);
-        
     });
 
 
