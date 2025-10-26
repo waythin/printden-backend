@@ -97,143 +97,234 @@ class ServiceController extends Controller
     public function servicePost(Request $request)
     {
         try {
-            // dd($request->all());
-            // Log::info('Request data:', $request->all());
+            /** -------------------------------------
+             *  ✅ Validation
+             * --------------------------------------*/
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'name' => 'required',
-                    'email' => 'required',
-                    'phone' => 'required',
-                    'service_id' => 'required',
-                    'location' => 'required',
-                    'delivery_type' => 'required',
+                    'name' => 'required|string|max:255',
+                    'email' => 'required|email',
+                    'phone' => 'required|string|max:20',
+                    'service_id' => 'required|integer|exists:services,id',
+                    'location' => 'required|string',
+                    'delivery_type' => 'required|in:inside_dhaka,outside_dhaka',
+                    'payment_method' => 'required|in:cod,online',
                     'documents' => 'required|array|min:1',
-                    'documents.*.size_id' => 'required|integer',            
+                    'documents.*.size_id' => 'required_if:service_id,1,2,3|integer|exists:sizes,id',
+                    'documents.*.album_id' => 'required_if:service_id,4|integer|exists:albums,id',
+                    'documents.*.pages' => 'required_if:service_id,4|array|min:1',
+                    'documents.*.pages.*.file' => 'required_if:service_id,4|file',
+                    'documents.*.file' => 'required_if:service_id,1,2,3|file',
                 ],
-                []
+                [
+                    'documents.*.size_id.required_if' => 'Size is required for this service.',
+                    'documents.*.album_id.required_if' => 'Album ID is required for album service.',
+                    'documents.*.pages.required_if' => 'Pages are required for album service.',
+                    'documents.*.file.required_if' => 'Document file is required.',
+                ]
             );
+
             if ($validator->fails()) {
                 return $this->responseWithError(null, $validator->errors(), 402);
             }
 
             DB::beginTransaction();
-            $documents = $request->documents;
-            if (empty($documents)) {
-                return $this->responseWithError(null, "No documents provided.", 400);
-            }
-            
-            // Create customer
-            $customer = Customer::create([
-                'name' => $request->name,
-                'slug' => Str::slug($request->name, '-'),
-                'email' => $request->email,
-                'phone' => $request->phone,
-            ]);
-    
-            $document_ids = [];
-            foreach ($documents as $key => $data) {
 
-                if ($request->hasFile("documents.$key.file")) {
-                    $image_file = $request->file("documents.$key.file");
-                    $image_name = uniqid() . '_' . date('YmdHis') . '.' . $image_file->getClientOriginalExtension();
-                    $image_file->move(public_path('/admin/orders'), $image_name);
-    
-                    $item = Document::create([
-                        'file_name' => $image_name,
-                    ]);
-                    $document_ids[] = [
-                        'id' => $item->id,
-                        'size_id' => $data['size_id'] ?? null,
-                        'frame_id' => $data['frame_id'] ?? null,
-                        'album_id' => $data['album_id'] ?? null,
-                    ];
-                }
-                else{
-                    return $this->responseWithError(null, "No file found.", 400);
-                }
+            /** -------------------------------------
+             *  ✅ Find or Create Customer
+             * --------------------------------------*/
+            $customer = Customer::firstOrCreate(
+                ['phone' => $request->phone],
+                [
+                    'name' => $request->name,
+                    'slug' => Str::slug($request->name, '-'),
+                    'email' => $request->email,
+                ]
+            );
+
+            // Update if exists
+            if (!$customer->wasRecentlyCreated) {
+                $customer->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                ]);
             }
 
-            // delivery type 
-            $delivery_charge = null;
+            /** -------------------------------------
+             *  ✅ Calculate Delivery Charge
+             * --------------------------------------*/
+            $delivery_charge = $request->delivery_type === 'inside_dhaka' ? 60 : 120;
 
-            if($request->delivery_type == "inside_dhaka"){
-                $delivery_charge = 60 ;
-            }
-            else{
-                $delivery_charge = 120;
-            }
-
-            // Create order
+            /** -------------------------------------
+             *  ✅ Create Order
+             * --------------------------------------*/
             $order = Order::create([
-                'order_no' => 'ord_' . rand(100000000, 999999999),
+                'order_no' => 'ORD-' . strtoupper(Str::random(8)),
                 'customer_id' => $customer->id,
                 'service_id' => $request->service_id,
                 'location' => $request->location,
                 'delivery_type' => $request->delivery_type,
                 'delivery_charge' => $delivery_charge,
                 'note' => $request->note,
+                'status' => 'pending',
             ]);
-    
-            // Create order details
-            $total_amount = null;
-            
-            foreach ($document_ids as $data) {
 
-                $price = Size::find($data['size_id'])->price;
-                $total_amount += $price;
+            $total_amount = 0;
 
-                OrderDetails::create([
-                    'order_id' => $order->id,
-                    'price' => $price,
-                    'document_id' => $data['id'],
-                    'size_id' => $data['size_id'],
-                    'frame_id' => $data['frame_id'],
-                    'album_id' => $data['album_id'],
-                ]);
+            /** -------------------------------------
+             *  ✅ Process Documents & Order Details
+             * --------------------------------------*/
+            foreach ($request->documents as $key => $doc) {
+
+                $serviceId = $request->service_id;
+
+                // -----------------------------
+                // Album Service (service_id = 4)
+                // -----------------------------
+                if ($serviceId == 4) {
+
+                    $no_of_pages = $doc['no_of_pages'] ?? count($doc['pages']);
+                    $size = Size::find($doc['size_id']);
+                    $price = $size ? $size->price : 0;
+
+                    // Create single order detail for album
+                    $orderDetail = OrderDetails::create([
+                        'order_id' => $order->id,
+                        'price' => $price,
+                        'album_id' => $doc['album_id'] ?? null,
+                        'album_custom_cover' => $doc['album_custom_cover'] ?? null,
+                        'no_of_pages' => $no_of_pages,
+                        'orientation' => $doc['orientation'] ?? null,
+                        'bleed_type' => $doc['bleed_type'] ?? null,
+                        'print_type_id' => $doc['print_type_id'] ?? null,
+                        'size_id' => $doc['size_id'],
+                    ]);
+
+                    // Upload pages
+                    foreach ($doc['pages'] as $page_no => $page_file) {
+                        if ($page_file instanceof \Illuminate\Http\UploadedFile) {
+                            $fileName = uniqid("page_") . '.' . $page_file->getClientOriginalExtension();
+                            $page_file->move(public_path('admin/orders'), $fileName);
+
+                            Document::create([
+                                'order_id' => $order->id,
+                                'order_details_id' => $orderDetail->id,
+                                'page_no' => $page_no + 1,
+                                'file_name' => $fileName,
+                            ]);
+                        }
+                    }
+
+                    $total_amount += $price;
+
+                } 
+                // -----------------------------
+                // Photo / Frame Print (service_id 1 or 2)
+                // -----------------------------
+                elseif (in_array($serviceId, [1,2])) {
+
+                    $size = Size::find($doc['size_id']);
+                    $price = $size ? $size->price : 0;
+
+                    if (!$request->hasFile("documents.$key.file")) {
+                        DB::rollBack();
+                        return $this->responseWithError(null, "Missing file for document index $key.", 400);
+                    }
+
+                    $file = $request->file("documents.$key.file");
+                    $fileName = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('admin/orders'), $fileName);
+
+                    $orderDetail = OrderDetails::create([
+                        'order_id' => $order->id,
+                        'price' => $price,
+                        'album_id' => $doc['album_id'] ?? null,
+                        'frame_id' => $doc['frame_id'] ?? null,
+                        'orientation' => $doc['orientation'] ?? null,
+                        'bleed_type' => $doc['bleed_type'] ?? null,
+                        'print_type_id' => $doc['print_type_id'] ?? null,
+                        'size_id' => $doc['size_id'],
+                    ]);
+
+                    Document::create([
+                        'order_id' => $order->id,
+                        'order_details_id' => $orderDetail->id,
+                        'file_name' => $fileName,
+                    ]);
+
+                    $total_amount += $price;
+
+                } 
+                // -----------------------------
+                // Collage Print (service_id = 3)
+                // -----------------------------
+                elseif ($serviceId == 3) {
+
+                    $size = Size::find($doc['size_id']);
+                    $price = $size ? $size->price : 0;
+
+                    if (!$request->hasFile("documents.$key.file")) {
+                        DB::rollBack();
+                        return $this->responseWithError(null, "Missing collage file.", 400);
+                    }
+
+                    $file = $request->file("documents.$key.file");
+                    $fileName = uniqid('collage_') . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('admin/orders'), $fileName);
+
+                    $orderDetail = OrderDetails::create([
+                        'order_id' => $order->id,
+                        'price' => $price,
+                        'album_id' => $doc['album_id'] ?? null,
+                        'frame_id' => $doc['frame_id'] ?? null,
+                        'orientation' => $doc['orientation'] ?? null,
+                        'bleed_type' => $doc['bleed_type'] ?? null,
+                        'print_type_id' => $doc['print_type_id'] ?? null,
+                        'size_id' => $doc['size_id'],
+                    ]);
+
+                    Document::create([
+                        'order_id' => $order->id,
+                        'order_details_id' => $orderDetail->id,
+                        'file_name' => $fileName,
+                    ]);
+
+                    $total_amount += $price;
+                }
             }
 
-            // payment
+            /** -------------------------------------
+             *  ✅ Payment
+             * --------------------------------------*/
+            $payment_status = $request->payment_method === 'online' ? 'success' : 'pending';
+            $order_status = $request->payment_method === 'online' ? 'confirm' : 'pending';
 
-            $payment_method = '';
-            $order_status = '';
-            $payment_status = "pending";
-
-
-            if($request->payment_method == "online"){
-                $payment_method = 'online';
-                $payment_status = "success";
-                $order_status = "confirm";
-            }else{
-                $payment_method = 'cod';
-                $order_status = "pending";
-            }
-
-
-            // bkash payment
-
-            $payment = Payment::create([
+            Payment::create([
                 'order_id' => $order->id,
-                'transaction_no' => 'txn_' . rand(10000000, 99999999),
-                'payment_method' => $payment_method,
+                'transaction_no' => 'TXN-' . strtoupper(Str::random(10)),
+                'payment_method' => $request->payment_method,
                 'payment_status' => $payment_status,
                 'payment_amount' => $total_amount + $delivery_charge,
-                // 'payment_details' => json_encode($request->all()),
             ]);
-            
 
+            /** -------------------------------------
+             *  ✅ Update Order Totals
+             * --------------------------------------*/
             $order->update([
-                'total' => $total_amount,
+                'sub_total' => $total_amount,
+                'total' => $total_amount + $delivery_charge,
                 'status' => $order_status,
             ]);
 
             DB::commit();
-            return $this->responseWithSuccess($order, 'Upload successful! We will get back to you shortly.');
+
+            return $this->responseWithSuccess($order, 'Order placed successfully!');
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            return $this->responseWithError(null, $th->getMessage());
+            return $this->responseWithError(null, $th->getMessage(), 500);
         }
-    }
+}
 
 }

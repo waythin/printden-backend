@@ -33,7 +33,17 @@
             <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
             <span>Review Ratings</span></a>
     </li>
-
+    <li class="nav-item {{ strpos(request()->url(), 'event') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.event') }}">
+            <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
+            <span>Events</span></a>
+    </li>
+    
+    <li class="nav-item {{ strpos(request()->url(), 'category') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.category') }}">
+            <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
+            <span>Categories</span></a>
+    </li>
     <li class="nav-item {{ strpos(request()->url(), 'offers/list') ? 'active' : '' }}">
         <a class="nav-link" href="{{route('admin.offers')}}">
             <img class="img-fluid" src="{{ asset('admin/contact.svg') }}" />

@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
+            $table->foreignId('order_details_id')->constrained('order_details')->cascadeOnDelete();
+            $table->integer('page_no')->nullable(); //only for album
             $table->string('file_name');
             $table->boolean('status')->default(1);
             $table->timestamps();
