@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Service;
 use App\Models\Customer;
 use App\Models\Document;
+use App\Models\Event;
 use Illuminate\Support\Str;
 use App\Models\OrderDetails;
 use App\Models\Payment;
@@ -92,7 +93,19 @@ class ServiceController extends Controller
             return $this->responseWithError(null, $th->getMessage());
         }
     }
+    public function eventList()
+    {
+        try {
+            $data = Event::with(['categories.galleries'])->get();
+            if($data){
+                return $this->responseWithSuccess($data, 'Event list Loaded');
+            }
+            return $this->responseWithError(null, "Data not found");
 
+        } catch (\Throwable $th) {
+            return $this->responseWithError(null, $th->getMessage());
+        }
+    }
 
     public function servicePost(Request $request)
     {
@@ -325,6 +338,60 @@ class ServiceController extends Controller
             DB::rollBack();
             return $this->responseWithError(null, $th->getMessage(), 500);
         }
-}
+    }
+   public function customerInfoPost(Request $request)
+    {
+        try {
+            /** -------------------------------------
+             *  ✅ Validation
+             * --------------------------------------*/
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'name' => 'required|string|max:255',
+                    'email' => 'required|email',
+                    'phone' => 'required|string|max:20',
+                ],
+                [
+                    
+                ]
+            );
 
+            if ($validator->fails()) {
+                return $this->responseWithError(null, $validator->errors(), 402);
+            }
+
+            DB::beginTransaction();
+
+            /** -------------------------------------
+             *  ✅ Find or Create Customer
+             * --------------------------------------*/
+            $customer = Customer::firstOrCreate(
+                ['phone' => $request->phone],
+                [
+                    'name' => $request->name,
+                    'slug' => Str::slug($request->name, '-'),
+                    'email' => $request->email,
+                    'type' => 'download',
+                ]
+            );
+
+            // Update if exists
+            if (!$customer->wasRecentlyCreated) {
+                $customer->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'type' => 'download',
+                ]);
+            }
+
+            DB::commit();
+
+            return $this->responseWithSuccess($customer, 'Customer Saved successfully!');
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->responseWithError(null, $th->getMessage(), 500);
+        }
+    }
 }

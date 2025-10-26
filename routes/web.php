@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\EventCategoryController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\EventGalleryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PriceController;
 use App\Http\Controllers\Admin\ReviewRatingsController;
@@ -54,16 +55,23 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 			// event
 			Route::get('event/event-datatables/{type?}', [EventController::class, 'eventDatatables'])->name('admin.event_datatables');
 			Route::get('event', [EventController::class, 'eventList'])->name('admin.event');
-			Route::post('event/update-review-status', [EventController::class, 'updateEventStatus'])->name('admin.updateEventStatus');
-			Route::post('event-post', [EventController::class, 'postEvent'])->name('admin.post.event');
+			Route::post('update-event-status', [EventController::class, 'updateEventStatus'])->name('admin.updateEventStatus');
+			Route::match(['get', 'post'], 'event-post/{id?}', [EventController::class, 'postEvent'])->name('admin.post.event');
 			Route::get('/delete-event/{id}', [EventController::class, 'deleteEvent'])->name('admin.delete.event');
 
 			// event category
 			Route::get('event/category-datatables/{type?}', [EventCategoryController::class, 'categoryDatatables'])->name('admin.category_datatables');
 			Route::get('category', [EventCategoryController::class, 'categoryList'])->name('admin.category');
-			Route::post('category/update-review-status', [EventCategoryController::class, 'updateEventCategoryStatus'])->name('admin.updateCategoryStatus');
-			Route::post('category-post', [EventCategoryController::class, 'postEventCategory'])->name('admin.post.category');
+			Route::post('update-category-status', [EventCategoryController::class, 'updateEventCategoryStatus'])->name('admin.updateCategoryStatus');
+			Route::match(['get', 'post'], 'category-post/{id?}', [EventCategoryController::class, 'postEventCategory'])->name('admin.post.category');
 			Route::get('/delete-category/{id}', [EventCategoryController::class, 'deleteEventCategory'])->name('admin.delete.category');
+
+			// event gallery
+			Route::get('event/gallery-datatables/{type?}', [EventGalleryController::class, 'galleryDatatables'])->name('admin.gallery_datatables');
+			Route::get('gallery', [EventGalleryController::class, 'galleryList'])->name('admin.gallery');
+			Route::post('update-gallery-status', [EventGalleryController::class, 'updateEventGalleryStatus'])->name('admin.updateGalleryStatus');
+			Route::match(['get', 'post'], 'gallery-post/{id?}', [EventGalleryController::class, 'postEventGallery'])->name('admin.post.gallery');
+			Route::get('/delete-gallery/{id}', [EventGalleryController::class, 'deleteEventGallery'])->name('admin.delete.gallery');
 
 			// offer
 

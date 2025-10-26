@@ -30,11 +30,11 @@
                             <div class="form-group">
                                 <label for="title" class="col-form-label">Title</label>
                                 <input type="text" class="form-control" name="title"
-                                    value="{{ old('title') }}" placeholder="Type title..."> 
+                                    value="{{ old('title', $event['title'] ?? '') }}" placeholder="Type title..."> 
                             </div>
                             <div class="form-group">
                                 <label for="description" class="col-form-label">Description</label>
-                                <textarea class="form-control"  name="description" placeholder="Type description...">{{ old('description') }}</textarea>
+                                <textarea class="form-control"  name="description" placeholder="Type description...">{{ old('description', $event['description'] ?? '') }}</textarea>
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -57,7 +57,6 @@
                 <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Category</th>
                         <th>Details</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -73,8 +72,6 @@
                                 {{ $event['description'] }}%
                             @else N/A
                             @endif
-                        </td>
-                        <td>
                         </td>
                         <td>
                             <div class="action-list">
@@ -94,7 +91,7 @@
                         <td>
                             <button class="btn show-btn edit-btn click-check" module="event" type="button" data-whatever="{{ $event['cupon_code'] }}"
                                 data-id="{!! $event['id'] !!}" data-toggle="modal"
-                                data-target=".form_modal" data-url="{{ route('admin.add_edit_event', $event['id']) }}">Edit
+                                data-target=".form_modal" data-url="{{ route('admin.post.event', $event['id']) }}">Edit
                             </button>
 
                             <a title="Delete Event" href="javascript:void(0)" class="confirmDelete" module="Event" moduleid="{{ $event['id'] }}">

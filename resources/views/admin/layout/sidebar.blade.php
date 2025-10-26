@@ -33,17 +33,35 @@
             <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
             <span>Review Ratings</span></a>
     </li>
-    <li class="nav-item {{ strpos(request()->url(), 'event') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('admin.event') }}">
-            <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
-            <span>Events</span></a>
-    </li>
     
-    <li class="nav-item {{ strpos(request()->url(), 'category') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('admin.category') }}">
-            <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
-            <span>Categories</span></a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link {{ !strpos(request()->url(), 'event') ? 'collapsed' : '' }}" href="#"
+                data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true"
+                aria-controls="collapseUtilities">
+                <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
+                <span>Events</span>
+            </a>
+            <div id="collapseUtilities" class="collapse {{ strpos(request()->url(), 'event') ? 'show' : '' }}"
+                aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item {{ strpos(request()->url(), 'event') ? 'active' : '' }}"
+                        href="{{ route('admin.event') }}">
+                        <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
+                        <span>Events</span>
+                    </a>
+                    <a class="collapse-item {{ strpos(request()->url(), 'category') ? 'active' : '' }}"
+                        href="{{ route('admin.category') }}">
+                        <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
+                        <span>Categories</span>
+                    </a>
+                    <a class="collapse-item {{ strpos(request()->url(), 'gallery') ? 'active' : '' }}"
+                        href="{{ route('admin.gallery') }}">
+                        <img class="img-fluid" src="{{ asset('admin/img/icons/setup.svg') }}" width="20px" />
+                        <span>Gallery</span>
+                    </a>
+                </div>
+            </div>
+        </li>
     <li class="nav-item {{ strpos(request()->url(), 'offers/list') ? 'active' : '' }}">
         <a class="nav-link" href="{{route('admin.offers')}}">
             <img class="img-fluid" src="{{ asset('admin/contact.svg') }}" />

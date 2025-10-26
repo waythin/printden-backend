@@ -61,22 +61,23 @@ class EventCategoryController extends Controller
     {
         $title = 'EventCategorys';
         $events = Event::where('status','active')->get();
-        return view('admin.events.event_cats', compact('title','events'));
+        $categories = EventCategory::get();
+        return view('admin.events.event_cats', compact('title','events','categories'));
     }
 
 
     public function updateEventCategoryStatus(Request $request)
     {
         // dump($request->all());
-        $data = EventCategory::find($request->id);
+        $data = EventCategory::find($request->data_id);
         if ($data) {
             $data->status = $request->status;
             $data->save();
 
-            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+            return response()->json(['success_message' => 'Status updated successfully.']);
         }
 
-        return response()->json(['success' => false, 'message' => 'Record not found.']);
+            return response()->json(['error_message' => 'Record not found.']);
     }
 
 
@@ -111,7 +112,7 @@ class EventCategoryController extends Controller
                 $data = $request->all();
 
                  $rules = [
-            	    'name' => 'required',
+            	    'title' => 'required',
             	    
                 ];
                 $customMessages = [
@@ -124,15 +125,8 @@ class EventCategoryController extends Controller
                     ]);
                 }
 
-                // $image_name = null;
-                // if ($request->hasfile('image')) {
-                //     $image_file = $request->file('image');
-                //     $image_name = date('Ymdhis') . '.' . $image_file->getClientOriginalExtension();
-                //     $image_file->move(public_path('/admin/categories'), $image_name);
-                // }
-    
-
-                $event->name = $request->name;
+                $event->event_id = $request->event_id;
+                $event->title = $request->title;
                 $event->description = $request->description;
                 $event->status = "active";
                 //$event->image = $image_name;
