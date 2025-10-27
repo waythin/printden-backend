@@ -11,9 +11,9 @@ class OrderDetails extends Model
     protected $guarded = [];
 
 
-    public function document()
+    public function documents()
     {
-        return $this->belongsTo(Document::class);
+        return $this->hasMany(Document::class);
     }
 
     public function album()

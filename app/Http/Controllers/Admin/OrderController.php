@@ -20,41 +20,19 @@ class OrderController extends Controller
     public function ordersDatatables(Request $request, $type = 'active')
     {
         $datas = Order::query();
-        // dd("ggwp") ;
         // pending', 'confirm', 'processing', 'failed', 'success
         if ($type == "pending") {
             $datas = $datas->where('status', 'pending');
-            $title = "Pending Orders";
         } else if ($type == "confirm") {
             $datas = $datas->where('status', 'confirm');
-            $title = "Confirm Orders";
         } else if ($type == "processing") {
             $datas = $datas->where('status', 'processing');
-            $title = "Processing Orders";
         } else if ($type == "failed") {
             $datas = $datas->where('status', 'failed');
-            $title = "Failed Orders";
         } else if ($type == "success") {
             $datas = $datas->where('status', 'success');
-            $title = "Success Orders";
         } else if ($type == "all") {
-            $title = "All Orders";
         }
-
-
-        $data  = $datas->get();
-        // dd($data);
-        // $datas = $datas
-        //     ->when($request->filled('daterange'), function($query) use ($request) {
-        //         $dates = explode(' - ', $request->daterange);
-        //         $from_date = Carbon::parse($dates[0] ?? 'today')->startOfDay();
-        //         $to_date = Carbon::parse($dates[1] ?? 'today')->endOfDay();
-        //         $query->whereBetween('created_at', [$from_date, $to_date]);
-        //     })
-        //     ->with([
-        //     ])->get();
-
-
 
         return DataTables::of($datas)
 
@@ -141,10 +119,10 @@ class OrderController extends Controller
             'customer',
             'payment',
             'orderDetails' => function ($query) {
-                $query->with('document', 'album', 'frame');
+                $query->with('documents', 'album', 'frame');
             }
         ])->findOrFail($id);
-        // dd($order->toArray());
+        //dd($order->toArray());
         $html = view('admin.orders.order_details', compact('order'))->render();
         return response()->json(['html' => $html]);
     }

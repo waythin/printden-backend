@@ -106,13 +106,15 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>
-                                @if (!empty($detail['document']['file_name']))
-                                    <a href="{{ asset($detail['document']['file_name'])}}" target="_blank">
-                                        <img src="{{ url($detail['document']['file_name']) }}" 
-                                             alt="Document Image" 
-                                             class="img-fluid" 
-                                             style="max-width: 100px;">
-                                    </a>
+                                @if (!empty($detail['documents']))
+                                        @foreach ($detail['documents'] as $doc)
+                                            <a href="{{ asset($doc['file_name'])}}" target="_blank">
+                                                <img src="{{ url($doc['file_name']) }}" 
+                                                    alt="Document Image" 
+                                                    class="img-fluid" 
+                                                    style="max-width: 100px;">
+                                            </a>
+                                        @endforeach
                                 @else
                                     N/A
                                 @endif
